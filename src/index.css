@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vvh: 100vh;
+  --vvw: 100vw;
+  --vvo-top: 0px;
+}
+
+/* Prevent double-tap zoom delay and elastic bounce on mobile touchscreens */
+html,
+body {
+  height: 100%;
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Viewport defense utility */
+.viewport-screen {
+  min-height: var(--vvh, 100vh);
+  max-height: var(--vvh, 100vh);
+}

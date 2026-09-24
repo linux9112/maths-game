@@ -1,0 +1,40 @@
+{
+  "name": "Math Calculation Practice & Games",
+  "short_name": "MathMastery",
+  "description": "Offline-first mental math practice, multiplication tables, and gamified calculation arcade.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "games"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Multiplication Tables",
+      "url": "/#tables",
+      "description": "Practice multiplication tables 1 to 100"
+    },
+    {
+      "name": "Arithmetic Operations",
+      "url": "/#operations",
+      "description": "Addition, Subtraction, Multiplication, Division"
+    },
+    {
+      "name": "Daily Challenge",
+      "url": "/#daily",
+      "description": "Solve today's mental math challenge"
+    }
+  ]
+}
