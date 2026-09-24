@@ -62,7 +62,7 @@ export const ArithmeticPractice: React.FC<ArithmeticPracticeProps> = ({
   useEffect(() => {
     if (inputMode === 'direct' && !useVirtualKeypad) {
       inputRef.current?.focus();
-      inputRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      inputRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
     }
   }, [currentIndex, inputMode, useVirtualKeypad]);
 

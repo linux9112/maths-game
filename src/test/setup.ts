@@ -77,3 +77,8 @@ HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((contextId: 
   }
   return null;
 }) as any;
+
+// 6. Mock Element.prototype.scrollIntoView
+if (typeof Element !== 'undefined' && !Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = vi.fn();
+}
