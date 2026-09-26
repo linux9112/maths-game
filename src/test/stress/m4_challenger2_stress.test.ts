@@ -470,37 +470,37 @@ describe('Milestone 4 Challenger 2: Empirical Stress & Verification Suite', () =
   // SCOPE 3: Leveling & Streak Arithmetic
   // =========================================================================
   describe('Scope 3: Leveling & Streak Arithmetic', () => {
-    it('3.1: All 50 level thresholds strictly match floor(100 * (L - 1)^1.5)', () => {
+    it('3.1: All 50 level thresholds strictly match floor(500 * (L - 1)^1.5)', () => {
       expect(LEVEL_XP_THRESHOLDS).toHaveLength(50);
 
       for (let L = 1; L <= 50; L++) {
-        const expectedThreshold = Math.floor(100 * Math.pow(L - 1, 1.5));
+        const expectedThreshold = Math.floor(500 * Math.pow(L - 1, 1.5));
         expect(LEVEL_XP_THRESHOLDS[L - 1]).toBe(expectedThreshold);
       }
 
       // Spot check specific mathematical points
-      expect(LEVEL_XP_THRESHOLDS[0]).toBe(0);      // Level 1: 100 * 0^1.5 = 0
-      expect(LEVEL_XP_THRESHOLDS[1]).toBe(100);    // Level 2: 100 * 1^1.5 = 100
-      expect(LEVEL_XP_THRESHOLDS[2]).toBe(282);    // Level 3: 100 * 2^1.5 = 282.84 -> 282
-      expect(LEVEL_XP_THRESHOLDS[3]).toBe(519);    // Level 4: 100 * 3^1.5 = 519.61 -> 519
-      expect(LEVEL_XP_THRESHOLDS[9]).toBe(2700);   // Level 10: 100 * 9^1.5 = 100 * 27 = 2700
-      expect(LEVEL_XP_THRESHOLDS[15]).toBe(5809);  // Level 16: 100 * 15^1.5 = 5809.47 -> 5809
-      expect(LEVEL_XP_THRESHOLDS[24]).toBe(11757); // Level 25: 100 * 24^1.5 = 11757.55 -> 11757
-      expect(LEVEL_XP_THRESHOLDS[39]).toBe(24355); // Level 40: 100 * 39^1.5 = 24355.69 -> 24355
-      expect(LEVEL_XP_THRESHOLDS[49]).toBe(34300); // Level 50: 100 * 49^1.5 = 100 * 343 = 34300
+      expect(LEVEL_XP_THRESHOLDS[0]).toBe(0);      // Level 1: 500 * 0^1.5 = 0
+      expect(LEVEL_XP_THRESHOLDS[1]).toBe(500);    // Level 2: 500 * 1^1.5 = 500
+      expect(LEVEL_XP_THRESHOLDS[2]).toBe(1414);   // Level 3: 500 * 2^1.5 = 1414.21 -> 1414
+      expect(LEVEL_XP_THRESHOLDS[3]).toBe(2598);   // Level 4: 500 * 3^1.5 = 2598.07 -> 2598
+      expect(LEVEL_XP_THRESHOLDS[9]).toBe(13500);  // Level 10: 500 * 9^1.5 = 500 * 27 = 13500
+      expect(LEVEL_XP_THRESHOLDS[15]).toBe(29047); // Level 16: 500 * 15^1.5 = 29047.37 -> 29047
+      expect(LEVEL_XP_THRESHOLDS[24]).toBe(58787); // Level 25: 500 * 24^1.5 = 58787.75 -> 58787
+      expect(LEVEL_XP_THRESHOLDS[39]).toBe(121777); // Level 40: 500 * 39^1.5 = 121777.46 -> 121777
+      expect(LEVEL_XP_THRESHOLDS[49]).toBe(171500); // Level 50: 500 * 49^1.5 = 500 * 343 = 171500
 
       // Test level resolution across boundary conditions
       expect(getLevelFromXp(0)).toBe(1);
-      expect(getLevelFromXp(99)).toBe(1);
-      expect(getLevelFromXp(100)).toBe(2);
-      expect(getLevelFromXp(281)).toBe(2);
-      expect(getLevelFromXp(282)).toBe(3);
-      expect(getLevelFromXp(24354)).toBe(39);
-      expect(getLevelFromXp(24355)).toBe(40);
-      expect(getLevelFromXp(34299)).toBe(49);
-      expect(getLevelFromXp(34300)).toBe(50);
-      expect(getLevelFromXp(98503)).toBe(100);
-      expect(getLevelFromXp(1000000)).toBeGreaterThan(100);
+      expect(getLevelFromXp(499)).toBe(1);
+      expect(getLevelFromXp(500)).toBe(2);
+      expect(getLevelFromXp(1413)).toBe(2);
+      expect(getLevelFromXp(1414)).toBe(3);
+      expect(getLevelFromXp(121776)).toBe(39);
+      expect(getLevelFromXp(121777)).toBe(40);
+      expect(getLevelFromXp(171499)).toBe(49);
+      expect(getLevelFromXp(171500)).toBe(50);
+      expect(getLevelFromXp(492518)).toBe(100);
+      expect(getLevelFromXp(5000000)).toBeGreaterThan(100);
       expect(getLevelFromXp(-50)).toBe(1);
       expect(getLevelFromXp(NaN)).toBe(1);
       expect(getLevelFromXp(Infinity)).toBe(1);
@@ -517,14 +517,14 @@ describe('Milestone 4 Challenger 2: Empirical Stress & Verification Suite', () =
       expect(getTitleForLevel(105)).toBe('Grandmaster');
 
       // Level Progress representation
-      const progL1 = getLevelProgress(50);
+      const progL1 = getLevelProgress(250);
       expect(progL1.level).toBe(1);
       expect(progL1.currentLevelXp).toBe(0);
-      expect(progL1.nextLevelXp).toBe(100);
-      expect(progL1.xpInCurrentLevel).toBe(50);
+      expect(progL1.nextLevelXp).toBe(500);
+      expect(progL1.xpInCurrentLevel).toBe(250);
       expect(progL1.progressPercentage).toBe(50);
 
-      const progL55 = getLevelProgress(40000);
+      const progL55 = getLevelProgress(200000);
       expect(progL55.level).toBe(55);
       expect(progL55.title).toBe('Number Hunter');
       expect(progL55.progressPercentage).toBeGreaterThanOrEqual(0);

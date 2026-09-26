@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calculator, Flame, Zap, Keyboard, Grid3X3, Gamepad2, Smartphone } from 'lucide-react';
+import { Flame, Zap, Keyboard, Grid3X3, Gamepad2, Smartphone } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { SoundToggle } from './SoundToggle';
 import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
@@ -55,9 +55,11 @@ export const Header: React.FC<HeaderProps> = ({
             onKeyDown={(e) => e.key === 'Enter' && onHomeClick?.()}
             aria-label="Return to main dashboard"
           >
-            <div className="p-1.5 sm:p-2 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white shadow-sm group-hover:scale-105 transition-transform">
-              <Calculator className="w-4 h-4 sm:w-6 sm:h-6" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="MathMastery Logo"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl object-contain shadow-sm group-hover:scale-105 transition-transform"
+            />
             <div className="flex flex-col">
               <span className="font-extrabold text-sm sm:text-lg tracking-tight text-slate-900 dark:text-white leading-tight">
                 {title}

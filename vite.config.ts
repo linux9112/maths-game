@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['favicon.svg', 'logo.png'],
       manifest: {
         name: 'Math Calculation Practice & Games',
         short_name: 'MathMastery',
@@ -19,6 +19,12 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait-primary',
         icons: [
+          {
+            src: '/logo.png',
+            sizes: '192x192 512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
           {
             src: '/favicon.svg',
             sizes: '192x192',

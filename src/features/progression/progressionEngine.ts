@@ -11,13 +11,13 @@ import {
 /**
  * Precomputed cumulative XP thresholds for levels 1 to 50:
  * Threshold(1) = 0
- * Threshold(L) = floor(100 * (L - 1)^1.5) for L in [2, 50]
+ * Threshold(L) = floor(500 * (L - 1)^1.5) for L in [2, 50]
  */
 export const LEVEL_XP_THRESHOLDS: readonly number[] = Object.freeze(
   Array.from({ length: 50 }, (_, i) => {
     const level = i + 1;
     if (level === 1) return 0;
-    return Math.floor(100 * Math.pow(level - 1, 1.5));
+    return Math.floor(500 * Math.pow(level - 1, 1.5));
   })
 );
 
@@ -26,13 +26,13 @@ export const LEVEL_XP_THRESHOLDS: readonly number[] = Object.freeze(
  */
 export function getLevelFromXp(totalXp: number): number {
   if (totalXp <= 0 || !isFinite(totalXp)) return 1;
-  const maxPrecomputed = LEVEL_XP_THRESHOLDS[49]; // Level 50 threshold: 34300
+  const maxPrecomputed = LEVEL_XP_THRESHOLDS[49]; // Level 50 threshold: 171500
   if (totalXp >= maxPrecomputed) {
-    let est = Math.floor(Math.pow(totalXp / 100, 2 / 3)) + 1;
-    while (Math.floor(100 * Math.pow(est, 1.5)) <= totalXp) {
+    let est = Math.floor(Math.pow(totalXp / 500, 2 / 3)) + 1;
+    while (Math.floor(500 * Math.pow(est, 1.5)) <= totalXp) {
       est++;
     }
-    while (est > 1 && Math.floor(100 * Math.pow(est - 1, 1.5)) > totalXp) {
+    while (est > 1 && Math.floor(500 * Math.pow(est - 1, 1.5)) > totalXp) {
       est--;
     }
     return est;
@@ -171,7 +171,7 @@ export function getLevelProgress(totalXp: number): LevelProgress {
   const getThreshold = (lvl: number): number => {
     if (lvl <= 1) return 0;
     if (lvl <= 50) return LEVEL_XP_THRESHOLDS[lvl - 1];
-    return Math.floor(100 * Math.pow(lvl - 1, 1.5));
+    return Math.floor(500 * Math.pow(lvl - 1, 1.5));
   };
 
   const currentThreshold = getThreshold(level);

@@ -67,28 +67,28 @@ describe('Progression Engine Suite', () => {
   });
 
   describe('Leveling Curve & 50 Thresholds', () => {
-    it('verifies all 50 precomputed level thresholds match floor(100 * (L-1)^1.5)', () => {
+    it('verifies all 50 precomputed level thresholds match floor(500 * (L-1)^1.5)', () => {
       expect(LEVEL_XP_THRESHOLDS.length).toBe(50);
       expect(LEVEL_XP_THRESHOLDS[0]).toBe(0); // Level 1
-      expect(LEVEL_XP_THRESHOLDS[1]).toBe(100); // Level 2
-      expect(LEVEL_XP_THRESHOLDS[2]).toBe(282); // Level 3
-      expect(LEVEL_XP_THRESHOLDS[9]).toBe(2700); // Level 10
-      expect(LEVEL_XP_THRESHOLDS[49]).toBe(34300); // Level 50
+      expect(LEVEL_XP_THRESHOLDS[1]).toBe(500); // Level 2
+      expect(LEVEL_XP_THRESHOLDS[2]).toBe(1414); // Level 3
+      expect(LEVEL_XP_THRESHOLDS[9]).toBe(13500); // Level 10
+      expect(LEVEL_XP_THRESHOLDS[49]).toBe(171500); // Level 50
 
       for (let l = 2; l <= 50; l++) {
-        const expected = Math.floor(100 * Math.pow(l - 1, 1.5));
+        const expected = Math.floor(500 * Math.pow(l - 1, 1.5));
         expect(LEVEL_XP_THRESHOLDS[l - 1]).toBe(expected);
       }
     });
 
     it('resolves exact level from cumulative XP for boundary values', () => {
       expect(getLevelFromXp(0)).toBe(1);
-      expect(getLevelFromXp(99)).toBe(1);
-      expect(getLevelFromXp(100)).toBe(2);
-      expect(getLevelFromXp(281)).toBe(2);
-      expect(getLevelFromXp(282)).toBe(3);
-      expect(getLevelFromXp(34300)).toBe(50);
-      expect(getLevelFromXp(98503)).toBe(100);
+      expect(getLevelFromXp(499)).toBe(1);
+      expect(getLevelFromXp(500)).toBe(2);
+      expect(getLevelFromXp(1413)).toBe(2);
+      expect(getLevelFromXp(1414)).toBe(3);
+      expect(getLevelFromXp(171500)).toBe(50);
+      expect(getLevelFromXp(492518)).toBe(100);
     });
 
     it('maps all level titles to level tiers correctly', () => {
@@ -109,12 +109,12 @@ describe('Progression Engine Suite', () => {
     });
 
     it('computes level progress percentage bounded within [0, 100]', () => {
-      const progress = getLevelProgress(150);
+      const progress = getLevelProgress(750);
       expect(progress.level).toBe(2);
       expect(progress.progressPercentage).toBeGreaterThan(0);
       expect(progress.progressPercentage).toBeLessThan(100);
 
-      const highProgress = getLevelProgress(50000);
+      const highProgress = getLevelProgress(250000);
       expect(highProgress.level).toBe(63);
       expect(highProgress.progressPercentage).toBeGreaterThanOrEqual(0);
       expect(highProgress.progressPercentage).toBeLessThanOrEqual(100);
