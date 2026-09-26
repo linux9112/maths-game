@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { GameState, GameConfig } from './types';
 import { Button } from '../../../components/common/Button';
+import { getGameTheme } from '../hub/gameCatalog';
+import { useTheme } from '../../../components/common/useTheme';
 
 export interface GameHUDProps {
   state: GameState;
@@ -35,6 +37,9 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   isMuted = false,
   onToggleMute,
 }) => {
+  const { isDark } = useTheme();
+  const theme = getGameTheme(config.gameId);
+
   const {
     score,
     combo,
@@ -59,12 +64,12 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   // Timer color
   const timerColor =
     timeRemainingSec === null
-      ? 'text-slate-300'
+      ? (isDark ? 'text-slate-300' : 'text-slate-600')
       : timeRemainingSec <= 10
-      ? 'text-red-400 animate-pulse'
+      ? 'text-red-500 animate-pulse'
       : timeRemainingSec <= 30
-      ? 'text-amber-400'
-      : 'text-emerald-400';
+      ? 'text-amber-500'
+      : (isDark ? 'text-emerald-400' : 'text-emerald-600');
 
   // Progress percentage
   const progressPercent =
@@ -77,7 +82,12 @@ export const GameHUD: React.FC<GameHUDProps> = ({
       <header
         role="region"
         aria-label="Game HUD"
-        className="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-2.5 sm:px-5 py-2 sm:py-2.5 select-none z-20 flex-shrink-0"
+        className="w-full backdrop-blur-md px-2.5 sm:px-5 py-2 sm:py-2.5 select-none z-20 flex-shrink-0 transition-colors"
+        style={{
+          backgroundColor: isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.92)',
+          borderBottom: isDark ? `1px solid ${theme.accent}33` : `1px solid ${theme.accent}25`,
+          color: isDark ? '#F8FAFC' : '#172033',
+        }}
       >
         <div className="w-full max-w-7xl mx-auto flex flex-col gap-1.5 sm:gap-2">
         {/* Top Control & Title Bar */}
@@ -88,24 +98,38 @@ export const GameHUD: React.FC<GameHUDProps> = ({
               type="button"
               onClick={status === 'PLAYING' ? onPause : onResume}
               aria-label={status === 'PLAYING' ? 'Pause Game' : 'Resume Game'}
-              className="p-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors flex items-center gap-1 text-xs font-bold"
+              className="p-1.5 rounded-xl transition-colors flex items-center gap-1 text-xs font-bold"
+              style={{
+                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 23, 42, 0.06)',
+                color: isDark ? '#CBD5E1' : '#334155',
+              }}
               title="Pause Game (Esc)"
             >
               <Pause className="w-4 h-4" />
-              <span className="hidden sm:inline text-[10px] text-slate-400 bg-slate-900 px-1.5 py-0.5 rounded">
+              <span className="hidden sm:inline text-[10px] opacity-75 px-1.5 py-0.5 rounded">
                 ESC
               </span>
             </button>
 
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-sm sm:text-base text-white tracking-tight line-clamp-1">
+              <span
+                className="font-extrabold text-sm sm:text-base tracking-tight line-clamp-1"
+                style={{ color: isDark ? '#F8FAFC' : '#172033' }}
+              >
                 {config.title}
               </span>
-              <span className="hidden sm:inline px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/60">
+              <span
+                className="hidden sm:inline px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                style={{
+                  backgroundColor: isDark ? `${theme.accent}25` : `${theme.accent}18`,
+                  borderColor: isDark ? `${theme.accent}40` : `${theme.accent}35`,
+                  color: theme.accent,
+                }}
+              >
                 {config.category}
               </span>
               {isStressFree && (
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800/60">
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30">
                   <ShieldCheck className="w-3 h-3" />
                   Zen
                 </span>

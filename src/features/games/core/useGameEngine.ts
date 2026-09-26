@@ -308,12 +308,15 @@ export function useGameEngine(options: UseGameEngineOptions = {}) {
 
   // Submit Answer
   const submitAnswer = useCallback(
-    (userAnswer: number | string) => {
+    (userAnswer: number | string, overrideExpectedAnswer?: number) => {
       if (status !== 'PLAYING' || !currentQuestion || isTransitioningRef.current) return;
 
       const now = Date.now();
       const responseTimeMs = Math.max(50, now - questionStartTimeRef.current);
-      const isCorrect = Number(userAnswer) === Number(currentQuestion.answer);
+      const expected = overrideExpectedAnswer !== undefined
+        ? Number(overrideExpectedAnswer)
+        : Number(currentQuestion.answer);
+      const isCorrect = Number(userAnswer) === expected;
 
       // Record Telemetry Attempt
       const attempt: CalculationAttempt = {
@@ -321,7 +324,7 @@ export function useGameEngine(options: UseGameEngineOptions = {}) {
         operator: currentQuestion.operator,
         operandA: currentQuestion.operandA,
         operandB: currentQuestion.operandB,
-        expectedAnswer: currentQuestion.answer,
+        expectedAnswer: expected,
         userAnswer: Number(userAnswer),
         isCorrect,
         responseTimeMs,
@@ -419,7 +422,7 @@ export function useGameEngine(options: UseGameEngineOptions = {}) {
         const mistakeItem: GameMistakeItem = {
           question: currentQuestion,
           userAnswer,
-          expectedAnswer: currentQuestion.answer,
+          expectedAnswer: expected,
           responseTimeMs,
           solveTimeMs: responseTimeMs,
           timestamp: now,

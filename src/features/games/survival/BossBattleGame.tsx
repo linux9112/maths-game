@@ -6,6 +6,8 @@ import { GamePreFlightModal } from '../core/GamePreFlightModal';
 import { GameSummaryModal } from '../core/GameSummaryModal';
 import { GameConfig } from '../core/types';
 import { useGameLoop } from '../shared/useGameLoop';
+import { useTheme } from '../../../components/common/useTheme';
+import { getGameTheme } from '../hub/gameCatalog';
 
 interface BossProfile {
   name: string;
@@ -48,6 +50,8 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
   onBackToHub,
   initialConfig,
 }) => {
+  const { isDark } = useTheme();
+
   const engine = useGameEngine({
     initialConfig: {
       gameId: 'boss_battle',
@@ -75,6 +79,8 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
     audio,
   } = engine;
 
+  const theme = getGameTheme(config.gameId);
+
   const [activeBossIndex, setActiveBossIndex] = useState<number>(0);
   const currentBoss = BOSS_ROSTER[activeBossIndex % BOSS_ROSTER.length];
 
@@ -101,7 +107,7 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
     }
   }, [state.status, currentBoss.maxHp]);
 
-  // Boss ATB (Active Time Battle) charging loop
+  // Boss ATB charging loop
   useGameLoop({
     isPaused: state.status !== 'PLAYING',
     onUpdate: (deltaSec) => {
@@ -111,7 +117,7 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
           // Boss unleashes retaliation attack! Deduct player life
           setIsPlayerHurt(true);
           setTimeout(() => setIsPlayerHurt(false), 600);
-          submitAnswer(-999999); // Triggers damage/warning in engine
+          submitAnswer(-999999);
           return 0;
         }
         return next;
@@ -139,7 +145,7 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
       setBossHp((prevHp) => {
         const remainingHp = Math.max(0, prevHp - damage);
         if (remainingHp <= 0) {
-          // Boss Defeated! Advance to next boss or victory
+          // Boss Defeated! Advance to next boss
           setTimeout(() => {
             setActiveBossIndex((prev) => prev + 1);
             setBossHp(BOSS_ROSTER[(activeBossIndex + 1) % BOSS_ROSTER.length].maxHp);
@@ -165,7 +171,16 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
   );
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-950 text-white select-none overflow-hidden relative">
+    <div
+      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+        isDark ? 'text-white' : 'text-slate-900'
+      }`}
+      style={{
+        background: isDark
+          ? `linear-gradient(180deg, ${theme.nightTop} 0%, ${theme.nightBottom} 100%)`
+          : `linear-gradient(180deg, ${theme.dayTop} 0%, ${theme.dayBottom} 100%)`,
+      }}
+    >
       <GameHUD
         state={state}
         config={config}
@@ -183,27 +198,33 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
       {/* RPG Combat Arena */}
       <div className="flex-1 flex flex-col items-center justify-between p-4 max-w-lg mx-auto w-full relative">
         {/* Boss Status Bar Card */}
-        <div className="w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-4 shadow-2xl backdrop-blur-sm space-y-3">
+        <div
+          className={`w-full rounded-3xl p-4 shadow-2xl backdrop-blur-sm space-y-3 border transition-colors ${
+            isDark
+              ? 'bg-slate-900/90 border-slate-800 shadow-slate-950/80'
+              : 'bg-white/95 border-slate-200 shadow-xl'
+          }`}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-3xl">{currentBoss.avatarIcon}</span>
               <div>
-                <h3 className="font-black text-base text-white leading-tight">
+                <h3 className="font-black text-base leading-tight">
                   {currentBoss.name}
                 </h3>
-                <p className="text-[10px] uppercase tracking-wider text-red-400 font-bold">
+                <p className="text-[10px] uppercase tracking-wider text-rose-500 font-bold">
                   {currentBoss.title}
                 </p>
               </div>
             </div>
 
-            <div className="text-right font-mono font-bold text-xs text-red-400">
+            <div className="text-right font-mono font-bold text-xs text-rose-500">
               HP: {bossHp} / {currentBoss.maxHp}
             </div>
           </div>
 
           {/* Boss HP Bar */}
-          <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+          <div className={`w-full h-3 rounded-full overflow-hidden border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
             <div
               className="h-full bg-gradient-to-r from-red-600 to-rose-500 transition-all duration-300"
               style={{ width: `${bossHpPercent}%` }}
@@ -212,13 +233,13 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
 
           {/* Boss Charge Attack Bar */}
           <div className="space-y-1">
-            <div className="flex justify-between text-[10px] uppercase font-bold text-slate-400">
+            <div className={`flex justify-between text-[10px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               <span>Boss Attack Charge</span>
-              <span className="text-amber-400">
+              <span className="text-amber-500 font-mono font-bold">
                 {(currentBoss.attackIntervalSec - bossChargeSec).toFixed(1)}s
               </span>
             </div>
-            <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+            <div className={`w-full h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
               <div
                 className="h-full bg-amber-400 transition-all duration-100"
                 style={{ width: `${bossChargePercent}%` }}
@@ -244,8 +265,8 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
             <div
               className={`absolute top-0 font-black text-2xl animate-bounce pointer-events-none ${
                 lastAttackEffect.isCrit
-                  ? 'text-amber-300 drop-shadow-[0_0_12px_rgba(251,191,36,0.9)] text-3xl'
-                  : 'text-red-400'
+                  ? 'text-amber-400 drop-shadow-[0_0_12px_rgba(251,191,36,0.9)] text-3xl'
+                  : 'text-red-500'
               }`}
             >
               -{lastAttackEffect.damage} {lastAttackEffect.isCrit ? 'CRIT!' : ''}
@@ -256,12 +277,21 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
         {/* Player Attack Equation Card & Choices */}
         {state.status === 'PLAYING' && state.currentQuestion && (
           <div className="w-full space-y-3 z-20">
-            <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 text-center shadow-xl backdrop-blur-md">
-              <span className="text-[10px] uppercase tracking-widest font-black text-indigo-400 flex items-center justify-center gap-1">
+            <div
+              className={`p-4 rounded-2xl border text-center shadow-xl backdrop-blur-md transition-colors ${
+                isDark
+                  ? 'bg-slate-900/90 border-slate-800 shadow-slate-950/80'
+                  : 'bg-white/95 border-slate-200 shadow-lg'
+              }`}
+            >
+              <span
+                className="text-[10px] uppercase tracking-widest font-black flex items-center justify-center gap-1"
+                style={{ color: theme.accent }}
+              >
                 <Swords className="w-3.5 h-3.5" />
                 Cast Math Spell
               </span>
-              <div className="text-3xl sm:text-4xl font-black font-mono text-white mt-1">
+              <div className="text-3xl sm:text-4xl font-black font-mono mt-1">
                 {state.currentQuestion.promptText}
               </div>
             </div>
@@ -273,7 +303,11 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
                     key={idx}
                     type="button"
                     onClick={() => handleAttack(opt)}
-                    className="py-4 px-3 bg-slate-800/90 hover:bg-indigo-600 active:scale-95 text-white font-mono font-black text-xl rounded-2xl border border-slate-700 hover:border-indigo-400 transition-all shadow-md"
+                    className={`py-4 px-3 active:scale-95 font-mono font-black text-xl rounded-2xl border transition-all shadow-md ${
+                      isDark
+                        ? 'bg-slate-800/90 hover:bg-purple-600 text-white border-slate-700 hover:border-purple-400'
+                        : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500'
+                    }`}
                   >
                     {opt}
                   </button>
@@ -285,18 +319,35 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
 
         {/* Start Overlay */}
         {state.status === 'IDLE' && (
-          <div className="p-8 bg-slate-900 border border-slate-700 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-red-500/20 text-red-400 border border-red-500/30 flex items-center justify-center">
+          <div
+            className={`p-8 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-2xl border backdrop-blur-md ${
+              isDark
+                ? 'bg-slate-900/95 border-slate-700 text-white shadow-slate-950/80'
+                : 'bg-white/95 border-slate-200 text-slate-900 shadow-xl'
+            }`}
+          >
+            <div
+              className="w-16 h-16 mx-auto rounded-3xl border flex items-center justify-center"
+              style={{
+                backgroundColor: `${theme.accent}20`,
+                borderColor: `${theme.accent}40`,
+                color: theme.accent,
+              }}
+            >
               <Skull className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl font-black text-white">Boss Battle RPG</h2>
-            <p className="text-xs text-slate-400">
-              Engage legendary math bosses! Answer quickly to deal combo damage before the boss charges their retaliation attack.
+            <h2 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Boss Battle RPG
+            </h2>
+            <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Engage legendary math bosses! Answer quickly to deal combo damage before the boss
+              charges their retaliation attack.
             </p>
             <button
               type="button"
               onClick={openPreFlight}
-              className="w-full py-3.5 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl shadow-lg transition-all"
+              className="w-full py-3.5 font-black rounded-xl shadow-lg transition-all active:scale-95 text-white"
+              style={{ backgroundColor: theme.accent }}
             >
               Challenge Boss
             </button>
@@ -306,7 +357,10 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
         {/* Countdown */}
         {state.status === 'COUNTDOWN' && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md z-40">
-            <span className="font-mono font-black text-8xl sm:text-9xl text-red-400 animate-ping">
+            <span
+              className="font-mono font-black text-8xl sm:text-9xl animate-ping"
+              style={{ color: theme.accent }}
+            >
               {state.countdownValue === 0 ? 'BATTLE!' : state.countdownValue}
             </span>
           </div>
@@ -318,7 +372,7 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
         gameId="boss_battle"
         gameTitle="Boss Battle Arena"
         category="Survival"
-        icon={<Skull className="w-5 h-5 text-red-400" />}
+        icon={<Skull className="w-5 h-5" style={{ color: theme.accent }} />}
         gameDescription="RPG Active Time Battle against animated math bosses. Attack quickly to prevent retaliations."
         defaultConfig={config}
         onStartGame={startGame}

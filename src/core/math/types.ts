@@ -70,6 +70,7 @@ export interface Question extends CalculationFact {
   readonly answerStr: string;       // String representation (e.g. "8", "25", or "7 R 2")
   readonly difficulty: DifficultyTier;
   readonly category: QuestionCategory;
+  readonly metadata?: unknown;
 }
 
 /**

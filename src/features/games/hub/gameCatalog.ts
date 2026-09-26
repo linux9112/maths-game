@@ -394,3 +394,26 @@ export const GAME_CATALOG: GameCatalogItem[] = [
     },
   },
 ];
+
+export function getGameTheme(gameId?: string): GameThemeColors {
+  if (!gameId) {
+    return {
+      accent: '#6366F1',
+      dayTop: '#EEF2FF',
+      dayBottom: '#DDE4FF',
+      nightTop: '#171D38',
+      nightBottom: '#232D55',
+    };
+  }
+  const match = GAME_CATALOG.find((g) => g.id === gameId);
+  return (
+    match?.themeColors || {
+      accent: '#6366F1',
+      dayTop: '#EEF2FF',
+      dayBottom: '#DDE4FF',
+      nightTop: '#171D38',
+      nightBottom: '#232D55',
+    }
+  );
+}
+

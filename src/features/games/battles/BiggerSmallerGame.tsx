@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { ArrowUpDown } from 'lucide-react';
 import { useGameEngine } from '../core/useGameEngine';
 import { GameHUD } from '../core/GameHUD';
@@ -7,6 +7,8 @@ import { GameSummaryModal } from '../core/GameSummaryModal';
 import { GameConfig } from '../core/types';
 import { Question, MathOperator } from '../../../core/math/types';
 import { generateArithmeticFact } from '../../../core/math/arithmeticGenerator';
+import { useTheme } from '../../../components/common/useTheme';
+import { getGameTheme } from '../hub/gameCatalog';
 
 interface ThresholdFact {
   promptExpr: string;
@@ -17,7 +19,8 @@ interface ThresholdFact {
 }
 
 function generateThresholdQuestion(config: GameConfig): ThresholdFact {
-  const ops: readonly MathOperator[] = config.selectedOperators && config.selectedOperators.length > 0 ? config.selectedOperators : ['*'];
+  const ops: readonly MathOperator[] =
+    config.selectedOperators && config.selectedOperators.length > 0 ? config.selectedOperators : ['*'];
   const op = ops[Math.floor(Math.random() * ops.length)];
   const fact = generateArithmeticFact({ allowedOperators: [op], level: 2 });
 
@@ -50,13 +53,10 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
   onBackToHub,
   initialConfig,
 }) => {
-  const [fact, setFact] = useState<ThresholdFact>(() =>
-    generateThresholdQuestion({ selectedOperators: ['*'] } as unknown as GameConfig)
-  );
+  const { isDark } = useTheme();
 
   const customGenerator = useCallback((cfg: GameConfig, index: number): Question => {
     const q = generateThresholdQuestion(cfg);
-    setFact(q);
     return {
       id: `bigger_smaller_${index}_${q.actualVal}_${q.threshold}`,
       operator: '*',
@@ -69,6 +69,7 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
       answerStr: q.isBigger ? 'Greater (>)' : 'Less (<)',
       difficulty: 'normal',
       category: 'game',
+      metadata: q,
     };
   }, []);
 
@@ -100,8 +101,20 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
     audio,
   } = engine;
 
+  const theme = getGameTheme(config.gameId);
+  const fact = (state.currentQuestion?.metadata as ThresholdFact) || null;
+
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-950 text-white select-none overflow-hidden relative">
+    <div
+      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+        isDark ? 'text-white' : 'text-slate-900'
+      }`}
+      style={{
+        background: isDark
+          ? `linear-gradient(180deg, ${theme.nightTop} 0%, ${theme.nightBottom} 100%)`
+          : `linear-gradient(180deg, ${theme.dayTop} 0%, ${theme.dayBottom} 100%)`,
+      }}
+    >
       <GameHUD
         state={state}
         config={config}
@@ -117,21 +130,41 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
       />
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
-        {state.status === 'PLAYING' && (
+        {state.status === 'PLAYING' && fact && (
           <div className="w-full space-y-6">
-            <div className="p-8 bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl space-y-4 text-center">
-              <span className="text-xs uppercase tracking-widest font-black text-amber-400 flex items-center justify-center gap-1.5">
+            <div
+              className={`p-6 sm:p-8 rounded-3xl shadow-2xl space-y-4 text-center border backdrop-blur-md transition-colors ${
+                isDark
+                  ? 'bg-slate-900/90 border-slate-700/80 shadow-slate-950/80'
+                  : 'bg-white/95 border-slate-200 shadow-xl'
+              }`}
+            >
+              <span
+                className="text-xs uppercase tracking-widest font-black flex items-center justify-center gap-1.5"
+                style={{ color: theme.accent }}
+              >
                 <ArrowUpDown className="w-4 h-4" />
                 Threshold Estimation
               </span>
 
-              <div className="text-3xl sm:text-5xl font-black font-mono text-white py-2">
+              <div className="text-3xl sm:text-5xl font-black font-mono py-2">
                 {fact.promptExpr}
               </div>
 
-              <div className="text-lg font-bold text-slate-300">
-                Is it <span className="text-amber-400">GREATER</span> or <span className="text-indigo-400">LESS</span> than{' '}
-                <span className="font-mono text-white font-black text-2xl underline decoration-amber-500">
+              <div className={`text-base sm:text-lg font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Is it{' '}
+                <span className="font-extrabold" style={{ color: theme.accent }}>
+                  GREATER
+                </span>{' '}
+                or{' '}
+                <span className="font-extrabold text-indigo-500">
+                  LESS
+                </span>{' '}
+                than{' '}
+                <span
+                  className="font-mono font-black text-2xl underline decoration-2 underline-offset-4"
+                  style={{ textDecorationColor: theme.accent }}
+                >
                   {fact.threshold}
                 </span>
                 ?
@@ -142,37 +175,66 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
               <button
                 type="button"
                 onClick={() => submitAnswer(1)}
-                className="py-6 bg-slate-800 hover:bg-amber-600 active:scale-95 text-white font-mono font-black text-2xl rounded-2xl border border-slate-700 hover:border-amber-400 transition-all shadow-lg flex flex-col items-center justify-center gap-1"
+                className={`py-5 sm:py-6 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-2xl border transition-all shadow-lg flex flex-col items-center justify-center gap-1 ${
+                  isDark
+                    ? 'bg-slate-800/90 hover:bg-purple-600 text-white border-slate-700 hover:border-purple-400'
+                    : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500 shadow-md'
+                }`}
               >
                 <span>GREATER (&gt;)</span>
-                <span className="text-xs font-sans text-slate-400">Above {fact.threshold}</span>
+                <span className={`text-xs font-sans ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Above {fact.threshold}
+                </span>
               </button>
 
               <button
                 type="button"
                 onClick={() => submitAnswer(2)}
-                className="py-6 bg-slate-800 hover:bg-indigo-600 active:scale-95 text-white font-mono font-black text-2xl rounded-2xl border border-slate-700 hover:border-indigo-400 transition-all shadow-lg flex flex-col items-center justify-center gap-1"
+                className={`py-5 sm:py-6 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-2xl border transition-all shadow-lg flex flex-col items-center justify-center gap-1 ${
+                  isDark
+                    ? 'bg-slate-800/90 hover:bg-indigo-600 text-white border-slate-700 hover:border-indigo-400'
+                    : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-200 hover:border-indigo-500 shadow-md'
+                }`}
               >
                 <span>LESS (&lt;)</span>
-                <span className="text-xs font-sans text-slate-400">Below {fact.threshold}</span>
+                <span className={`text-xs font-sans ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Below {fact.threshold}
+                </span>
               </button>
             </div>
           </div>
         )}
 
         {state.status === 'IDLE' && (
-          <div className="p-8 bg-slate-900 border border-slate-700 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+          <div
+            className={`p-8 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-2xl border backdrop-blur-md ${
+              isDark
+                ? 'bg-slate-900/95 border-slate-700 text-white shadow-slate-950/80'
+                : 'bg-white/95 border-slate-200 text-slate-900 shadow-xl'
+            }`}
+          >
+            <div
+              className="w-16 h-16 mx-auto rounded-3xl border flex items-center justify-center"
+              style={{
+                backgroundColor: `${theme.accent}20`,
+                borderColor: `${theme.accent}40`,
+                color: theme.accent,
+              }}
+            >
               <ArrowUpDown className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl font-black text-white">Bigger or Smaller</h2>
-            <p className="text-xs text-slate-400">
-              Quick estimation check! Evaluate whether the mental calculation exceeds or falls below a target number threshold.
+            <h2 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Bigger or Smaller
+            </h2>
+            <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Quick estimation check! Evaluate whether the mental calculation exceeds or falls below
+              a target number threshold.
             </p>
             <button
               type="button"
               onClick={openPreFlight}
-              className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl shadow-lg transition-all"
+              className="w-full py-3.5 font-black rounded-xl shadow-lg transition-all active:scale-95 text-white"
+              style={{ backgroundColor: theme.accent }}
             >
               Start Drill
             </button>
@@ -181,7 +243,10 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
 
         {state.status === 'COUNTDOWN' && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md z-40">
-            <span className="font-mono font-black text-8xl sm:text-9xl text-amber-400 animate-ping">
+            <span
+              className="font-mono font-black text-8xl sm:text-9xl animate-ping"
+              style={{ color: theme.accent }}
+            >
               {state.countdownValue === 0 ? 'ESTIMATE!' : state.countdownValue}
             </span>
           </div>
@@ -193,7 +258,7 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
         gameId="bigger_smaller"
         gameTitle="Bigger or Smaller"
         category="Battles"
-        icon={<ArrowUpDown className="w-5 h-5 text-amber-400" />}
+        icon={<ArrowUpDown className="w-5 h-5" style={{ color: theme.accent }} />}
         gameDescription="Estimate whether calculations exceed or fall below benchmark thresholds."
         defaultConfig={config}
         onStartGame={startGame}

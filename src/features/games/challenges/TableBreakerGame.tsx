@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { LayoutGrid } from 'lucide-react';
 import { useGameEngine } from '../core/useGameEngine';
 import { GameHUD } from '../core/GameHUD';
 import { GamePreFlightModal } from '../core/GamePreFlightModal';
 import { GameSummaryModal } from '../core/GameSummaryModal';
 import { GameConfig } from '../core/types';
+import { Question } from '../../../core/math/types';
+import { useTheme } from '../../../components/common/useTheme';
+import { getGameTheme } from '../hub/gameCatalog';
 
 interface Brick {
   id: number;
@@ -48,7 +51,40 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
   onBackToHub,
   initialConfig,
 }) => {
+  const { isDark } = useTheme();
   const [bricks, setBricks] = useState<Brick[]>(() => generateBricksWall(12));
+  const bricksRef = useRef<Brick[]>(bricks);
+  bricksRef.current = bricks;
+
+  const customGenerator = useCallback((_cfg: GameConfig, index: number): Question => {
+    const currentBricks = bricksRef.current;
+    const brick = currentBricks[index % currentBricks.length];
+
+    // Generate 4 plausible distinct options
+    const optsSet = new Set<number>([brick.answer]);
+    optsSet.add(brick.answer + (Math.random() < 0.5 ? 2 : -2));
+    optsSet.add(brick.answer + (Math.random() < 0.5 ? 4 : -4));
+    optsSet.add(brick.answer + (Math.random() < 0.5 ? 6 : -6));
+    while (optsSet.size < 4) {
+      optsSet.add(Math.max(1, brick.answer + (Math.floor(Math.random() * 10) - 5)));
+    }
+    const options = Array.from(optsSet).sort(() => Math.random() - 0.5);
+
+    return {
+      id: `breaker_${index}_${brick.id}_${brick.answer}`,
+      operator: '*',
+      operandA: 1,
+      operandB: 1,
+      answer: brick.answer,
+      promptText: `${brick.equation} = ?`,
+      displayOperator: '=',
+      options,
+      answerStr: String(brick.answer),
+      difficulty: 'normal',
+      category: 'game',
+      metadata: brick,
+    };
+  }, []);
 
   const engine = useGameEngine({
     initialConfig: {
@@ -60,6 +96,7 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
       targetLength: 12,
       ...initialConfig,
     },
+    customQuestionGenerator: customGenerator,
   });
 
   const {
@@ -77,30 +114,53 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
     audio,
   } = engine;
 
-  // Sync active brick to current question
+  const theme = getGameTheme(config.gameId);
   const unbrokenBricks = bricks.filter((b) => !b.isBroken);
-  const activeBrick = unbrokenBricks.length > 0 ? unbrokenBricks[0] : null;
+  const activeBrickMeta = state.currentQuestion?.metadata as Brick | undefined;
+
+  const handleStartGame = (cfg: GameConfig) => {
+    const newWall = generateBricksWall(12);
+    bricksRef.current = newWall;
+    setBricks(newWall);
+    startGame(cfg);
+  };
+
+  const handleRestart = () => {
+    const newWall = generateBricksWall(12);
+    bricksRef.current = newWall;
+    setBricks(newWall);
+    restart();
+  };
 
   const handleChoice = (ans: number) => {
     if (!state.currentQuestion) return;
     const isCorrect = ans === state.currentQuestion.answer;
     submitAnswer(ans);
 
-    if (isCorrect && activeBrick) {
+    if (isCorrect && activeBrickMeta) {
       setBricks((prev) =>
-        prev.map((b) => (b.id === activeBrick.id ? { ...b, isBroken: true } : b))
+        prev.map((b) => (b.id === activeBrickMeta.id ? { ...b, isBroken: true } : b))
       );
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-950 text-white select-none overflow-hidden relative">
+    <div
+      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+        isDark ? 'text-white' : 'text-slate-900'
+      }`}
+      style={{
+        background: isDark
+          ? `linear-gradient(180deg, ${theme.nightTop} 0%, ${theme.nightBottom} 100%)`
+          : `linear-gradient(180deg, ${theme.dayTop} 0%, ${theme.dayBottom} 100%)`,
+      }}
+    >
       <GameHUD
         state={state}
         config={config}
         onPause={pause}
         onResume={resume}
-        onRestart={restart}
+        onRestart={handleRestart}
         onForfeit={() => {
           forfeit();
           onBackToHub?.();
@@ -111,26 +171,36 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
 
       <div className="flex-1 flex flex-col items-center justify-between p-4 max-w-lg mx-auto w-full relative">
         {/* Brick Wall Grid */}
-        <div className="w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-4 shadow-2xl space-y-2">
-          <div className="flex justify-between items-center px-1 text-[10px] uppercase font-bold text-slate-400">
-            <span>Bricks Remaining: {unbrokenBricks.length}</span>
-            <span className="text-amber-400 font-mono">
+        <div
+          className={`w-full rounded-3xl p-4 shadow-2xl space-y-2 border backdrop-blur-md transition-colors ${
+            isDark
+              ? 'bg-slate-900/90 border-slate-800 shadow-slate-950/80'
+              : 'bg-white/95 border-slate-200 shadow-xl'
+          }`}
+        >
+          <div className="flex justify-between items-center px-1 text-[10px] uppercase font-bold">
+            <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>
+              Bricks Remaining: {unbrokenBricks.length}
+            </span>
+            <span className="font-mono" style={{ color: theme.accent }}>
               Wall Cleared: {Math.round(((bricks.length - unbrokenBricks.length) / bricks.length) * 100)}%
             </span>
           </div>
 
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
             {bricks.map((brick) => {
-              const isTarget = activeBrick?.id === brick.id;
+              const isTarget = activeBrickMeta?.id === brick.id;
               return (
                 <div
                   key={brick.id}
                   className={`h-14 rounded-xl border flex flex-col items-center justify-center font-mono font-bold text-sm transition-all ${
                     brick.isBroken
-                      ? 'opacity-10 scale-90 border-transparent bg-slate-800'
+                      ? isDark
+                        ? 'opacity-10 scale-90 border-transparent bg-slate-800'
+                        : 'opacity-10 scale-90 border-transparent bg-slate-200'
                       : isTarget
-                      ? `${brick.colorClass} ring-4 ring-white/60 scale-105 shadow-xl`
-                      : `${brick.colorClass} opacity-80`
+                      ? `${brick.colorClass} ring-4 ring-indigo-400/80 scale-105 shadow-xl`
+                      : `${brick.colorClass} opacity-85`
                   }`}
                 >
                   {!brick.isBroken && (
@@ -148,11 +218,20 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
         {/* Active Question & Options */}
         {state.status === 'PLAYING' && state.currentQuestion && (
           <div className="w-full space-y-4 my-auto">
-            <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 text-center shadow-xl">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-amber-400">
+            <div
+              className={`p-5 rounded-2xl border text-center shadow-xl backdrop-blur-md transition-colors ${
+                isDark
+                  ? 'bg-slate-900/90 border-slate-800 shadow-slate-950/80'
+                  : 'bg-white/95 border-slate-200 shadow-lg'
+              }`}
+            >
+              <span
+                className="text-[10px] uppercase font-mono tracking-widest font-black"
+                style={{ color: theme.accent }}
+              >
                 Break Target Brick
               </span>
-              <div className="text-4xl font-black font-mono text-white mt-1">
+              <div className="text-4xl sm:text-5xl font-black font-mono mt-1">
                 {state.currentQuestion.promptText}
               </div>
             </div>
@@ -164,7 +243,11 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
                     key={idx}
                     type="button"
                     onClick={() => handleChoice(opt)}
-                    className="py-4 bg-slate-800/90 hover:bg-amber-600 active:scale-95 text-white font-mono font-black text-xl rounded-2xl border border-slate-700 hover:border-amber-400 transition-all shadow-lg"
+                    className={`py-4 active:scale-95 font-mono font-black text-xl rounded-2xl border transition-all shadow-lg ${
+                      isDark
+                        ? 'bg-slate-800/90 hover:bg-indigo-600 text-white border-slate-700 hover:border-indigo-400'
+                        : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-200 hover:border-indigo-500 shadow-md'
+                    }`}
                   >
                     {opt}
                   </button>
@@ -176,18 +259,35 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
 
         {/* Start Overlay */}
         {state.status === 'IDLE' && (
-          <div className="p-8 bg-slate-900 border border-slate-700 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-2xl my-auto">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center">
+          <div
+            className={`p-8 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-2xl border my-auto backdrop-blur-md ${
+              isDark
+                ? 'bg-slate-900/95 border-slate-700 text-white shadow-slate-950/80'
+                : 'bg-white/95 border-slate-200 text-slate-900 shadow-xl'
+            }`}
+          >
+            <div
+              className="w-16 h-16 mx-auto rounded-3xl border flex items-center justify-center"
+              style={{
+                backgroundColor: `${theme.accent}20`,
+                borderColor: `${theme.accent}40`,
+                color: theme.accent,
+              }}
+            >
               <LayoutGrid className="w-8 h-8" />
             </div>
-            <h2 className="text-2xl font-black text-white">Table Breaker</h2>
-            <p className="text-xs text-slate-400">
-              Break out of the math wall! Solve each times-table brick to shatter it until the entire wall is demolished.
+            <h2 className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Table Breaker
+            </h2>
+            <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Break out of the math wall! Solve each times-table brick to shatter it until the
+              entire wall is demolished.
             </p>
             <button
               type="button"
               onClick={openPreFlight}
-              className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl shadow-lg transition-all"
+              className="w-full py-3.5 font-black rounded-xl shadow-lg transition-all active:scale-95 text-white"
+              style={{ backgroundColor: theme.accent }}
             >
               Start Breaker
             </button>
@@ -197,7 +297,10 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
         {/* Countdown */}
         {state.status === 'COUNTDOWN' && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md z-40">
-            <span className="font-mono font-black text-8xl sm:text-9xl text-amber-400 animate-ping">
+            <span
+              className="font-mono font-black text-8xl sm:text-9xl animate-ping"
+              style={{ color: theme.accent }}
+            >
               {state.countdownValue === 0 ? 'BREAK!' : state.countdownValue}
             </span>
           </div>
@@ -209,10 +312,10 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
         gameId="table_breaker"
         gameTitle="Table Breaker"
         category="Challenges"
-        icon={<LayoutGrid className="w-5 h-5 text-amber-400" />}
+        icon={<LayoutGrid className="w-5 h-5" style={{ color: theme.accent }} />}
         gameDescription="Shatter the arithmetic brick wall. Clear all calculation bricks."
         defaultConfig={config}
-        onStartGame={startGame}
+        onStartGame={handleStartGame}
         onClose={closePreFlight}
       />
 
@@ -220,7 +323,7 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
         isOpen={state.status === 'GAME_OVER' || state.status === 'VICTORY'}
         gameTitle="Table Breaker"
         summary={summaryData}
-        onPlayAgain={restart}
+        onPlayAgain={handleRestart}
         onBackToArcade={() => onBackToHub?.()}
       />
     </div>

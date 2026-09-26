@@ -6,6 +6,8 @@ import { GamePreFlightModal } from '../core/GamePreFlightModal';
 import { GameSummaryModal } from '../core/GameSummaryModal';
 import { GameConfig } from '../core/types';
 import { useGameLoop } from '../shared/useGameLoop';
+import { useTheme } from '../../../components/common/useTheme';
+import { getGameTheme } from '../hub/gameCatalog';
 
 export interface RocketGameProps {
   onBackToHub?: () => void;
@@ -16,6 +18,8 @@ export const RocketGame: React.FC<RocketGameProps> = ({
   onBackToHub,
   initialConfig,
 }) => {
+  const { isDark } = useTheme();
+
   const engine = useGameEngine({
     initialConfig: {
       gameId: 'rocket_launch',
@@ -42,6 +46,8 @@ export const RocketGame: React.FC<RocketGameProps> = ({
     forfeit,
     audio,
   } = engine;
+
+  const theme = getGameTheme(config.gameId);
 
   // Rocket physical state
   const [altitude, setAltitude] = useState<number>(100); // in meters
@@ -88,7 +94,16 @@ export const RocketGame: React.FC<RocketGameProps> = ({
   const displayYPercent = Math.min(85, Math.max(15, (altitude / 10000) * 70 + 15));
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-slate-950 text-white select-none overflow-hidden relative">
+    <div
+      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+        isDark ? 'text-white' : 'text-slate-900'
+      }`}
+      style={{
+        background: isDark
+          ? `linear-gradient(180deg, ${theme.nightTop} 0%, ${theme.nightBottom} 100%)`
+          : `linear-gradient(180deg, ${theme.dayTop} 0%, ${theme.dayBottom} 100%)`,
+      }}
+    >
       <GameHUD
         state={state}
         config={config}
@@ -104,20 +119,36 @@ export const RocketGame: React.FC<RocketGameProps> = ({
       />
 
       {/* Main Sky / Space Canvas Area */}
-      <div className="flex-1 relative overflow-hidden bg-gradient-to-b from-indigo-950 via-slate-900 to-sky-950 flex flex-col justify-between p-4">
+      <div className="flex-1 relative overflow-hidden flex flex-col justify-between p-4">
         {/* Altitude & Atmosphere HUD Badge */}
         <div className="flex items-center justify-between z-10">
-          <div className="px-4 py-2 bg-slate-900/80 rounded-2xl border border-slate-700 backdrop-blur-sm flex items-center gap-2">
-            <Rocket className="w-5 h-5 text-indigo-400" />
+          <div
+            className={`px-4 py-2 rounded-2xl border backdrop-blur-sm flex items-center gap-2 shadow-sm ${
+              isDark ? 'bg-slate-900/80 border-slate-700' : 'bg-white/80 border-slate-200'
+            }`}
+          >
+            <Rocket className="w-5 h-5" style={{ color: theme.accent }} />
             <div>
-              <div className="text-[10px] uppercase font-bold text-slate-400">Altitude</div>
-              <div className="font-mono font-black text-lg text-white">{altitude.toLocaleString()} m</div>
+              <div className={`text-[10px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                Altitude
+              </div>
+              <div className="font-mono font-black text-lg">
+                {altitude.toLocaleString()} m
+              </div>
             </div>
           </div>
 
-          <div className="px-4 py-2 bg-slate-900/80 rounded-2xl border border-slate-700 backdrop-blur-sm text-right">
-            <div className="text-[10px] uppercase font-bold text-slate-400">Stage</div>
-            <div className="font-bold text-sm text-amber-300">{stageName}</div>
+          <div
+            className={`px-4 py-2 rounded-2xl border backdrop-blur-sm text-right shadow-sm ${
+              isDark ? 'bg-slate-900/80 border-slate-700' : 'bg-white/80 border-slate-200'
+            }`}
+          >
+            <div className={`text-[10px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              Stage
+            </div>
+            <div className="font-bold text-sm" style={{ color: theme.accent }}>
+              {stageName}
+            </div>
           </div>
         </div>
 
@@ -131,15 +162,24 @@ export const RocketGame: React.FC<RocketGameProps> = ({
             className="absolute flex flex-col items-center"
           >
             {/* Rocket Sprite */}
-            <div className="p-3 bg-indigo-600/30 border border-indigo-400/50 rounded-full shadow-2xl backdrop-blur-sm">
-              <Rocket className="w-12 h-12 text-white -rotate-45" />
+            <div
+              className="p-3 border rounded-full shadow-2xl backdrop-blur-sm"
+              style={{
+                backgroundColor: `${theme.accent}33`,
+                borderColor: `${theme.accent}66`,
+              }}
+            >
+              <Rocket
+                className="w-12 h-12 -rotate-45"
+                style={{ color: theme.accent }}
+              />
             </div>
 
             {/* Thruster Exhaust Flames */}
             {isThrusting && (
               <div className="flex flex-col items-center -mt-1 animate-pulse">
-                <Flame className="w-8 h-8 text-orange-400 fill-orange-500" />
-                <Flame className="w-5 h-5 text-amber-300 fill-amber-300 -mt-3" />
+                <Flame className="w-8 h-8 text-orange-500 fill-orange-500" />
+                <Flame className="w-5 h-5 text-amber-400 fill-amber-400 -mt-3" />
               </div>
             )}
           </div>
@@ -149,8 +189,14 @@ export const RocketGame: React.FC<RocketGameProps> = ({
         {state.status === 'PLAYING' && state.currentQuestion && (
           <div className="max-w-md mx-auto w-full z-20 space-y-3">
             {/* Question card */}
-            <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-700 text-center shadow-xl backdrop-blur-md">
-              <div className="text-3xl font-black font-mono text-white">
+            <div
+              className={`p-4 rounded-2xl border text-center shadow-xl backdrop-blur-md transition-colors ${
+                isDark
+                  ? 'bg-slate-900/90 border-slate-700 shadow-slate-950/80'
+                  : 'bg-white/95 border-slate-200 shadow-lg'
+              }`}
+            >
+              <div className="text-3xl font-black font-mono">
                 {state.currentQuestion.promptText}
               </div>
             </div>
@@ -163,7 +209,11 @@ export const RocketGame: React.FC<RocketGameProps> = ({
                     key={i}
                     type="button"
                     onClick={() => handleAnswer(opt)}
-                    className="py-3 px-2 bg-slate-800 hover:bg-indigo-600 active:scale-95 text-white font-mono font-bold text-lg sm:text-xl rounded-xl border border-slate-700 hover:border-indigo-400 transition-all shadow-md"
+                    className={`py-3 px-2 active:scale-95 font-mono font-bold text-lg sm:text-xl rounded-xl border transition-all shadow-md ${
+                      isDark
+                        ? 'bg-slate-800 hover:bg-purple-600 text-white border-slate-700 hover:border-purple-400'
+                        : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500'
+                    }`}
                   >
                     {opt}
                   </button>
@@ -175,19 +225,36 @@ export const RocketGame: React.FC<RocketGameProps> = ({
 
         {/* Start Overlay */}
         {state.status === 'IDLE' && (
-          <div className="absolute inset-0 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm z-30">
-            <div className="p-6 bg-slate-900 border border-slate-700 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-2xl">
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm z-30">
+            <div
+              className={`p-6 sm:p-8 rounded-3xl max-w-sm w-full text-center space-y-4 shadow-2xl border backdrop-blur-md ${
+                isDark
+                  ? 'bg-slate-900/95 border-slate-700 text-white shadow-slate-950/80'
+                  : 'bg-white/95 border-slate-200 text-slate-900 shadow-xl'
+              }`}
+            >
+              <div
+                className="w-14 h-14 mx-auto rounded-2xl border flex items-center justify-center"
+                style={{
+                  backgroundColor: `${theme.accent}20`,
+                  borderColor: `${theme.accent}40`,
+                  color: theme.accent,
+                }}
+              >
                 <Rocket className="w-8 h-8 -rotate-45" />
               </div>
-              <h2 className="text-xl font-black text-white">Rocket Math</h2>
-              <p className="text-xs text-slate-400">
-                Propel your rocket into orbit by answering equations quickly. Gravity is always pulling you down!
+              <h2 className={`text-xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                Rocket Math
+              </h2>
+              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                Propel your rocket into orbit by answering equations quickly. Gravity is always pulling
+                you down!
               </p>
               <button
                 type="button"
                 onClick={openPreFlight}
-                className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg transition-all"
+                className="w-full py-3 font-bold rounded-xl shadow-lg transition-all active:scale-95 text-white"
+                style={{ backgroundColor: theme.accent }}
               >
                 Launch Configuration
               </button>
@@ -198,7 +265,10 @@ export const RocketGame: React.FC<RocketGameProps> = ({
         {/* Countdown */}
         {state.status === 'COUNTDOWN' && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-950/80 backdrop-blur-md z-40">
-            <span className="font-mono font-black text-8xl sm:text-9xl text-indigo-400 animate-ping">
+            <span
+              className="font-mono font-black text-8xl sm:text-9xl animate-ping"
+              style={{ color: theme.accent }}
+            >
               {state.countdownValue === 0 ? 'LIFTOFF!' : state.countdownValue}
             </span>
           </div>
@@ -210,7 +280,7 @@ export const RocketGame: React.FC<RocketGameProps> = ({
         gameId="rocket_launch"
         gameTitle="Rocket Math"
         category="Speed"
-        icon={<Rocket className="w-5 h-5 text-indigo-400" />}
+        icon={<Rocket className="w-5 h-5" style={{ color: theme.accent }} />}
         gameDescription="Ignite your rocket thrusters with mental math. Climb through the atmosphere to outer space."
         defaultConfig={config}
         onStartGame={startGame}
