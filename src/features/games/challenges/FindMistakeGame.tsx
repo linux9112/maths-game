@@ -128,7 +128,7 @@ export const FindMistakeGame: React.FC<FindMistakeGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -151,14 +151,14 @@ export const FindMistakeGame: React.FC<FindMistakeGameProps> = ({
         onToggleMute={audio.toggleMute}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {state.status === 'PLAYING' && round && (
-          <div className="w-full space-y-6">
+          <div className="w-full space-y-3 sm:space-y-4">
             <div
-              className={`p-4 sm:p-5 rounded-3xl shadow-xl text-center space-y-1 border backdrop-blur-md transition-colors ${
+              className={`p-3 sm:p-4 rounded-2xl sm:rounded-3xl shadow-lg text-center space-y-1 border backdrop-blur-md transition-colors ${
                 isDark
                   ? 'bg-slate-900/90 border-slate-700/80 shadow-slate-950/80'
-                  : 'bg-white/95 border-slate-200 shadow-lg'
+                  : 'bg-white/95 border-slate-200 shadow-md'
               }`}
             >
               <span
@@ -168,22 +168,22 @@ export const FindMistakeGame: React.FC<FindMistakeGameProps> = ({
                 <Search className="w-4 h-4" />
                 Error Detection
               </span>
-              <h3 className={`text-base sm:text-lg font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h3 className={`text-sm sm:text-base font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 3 of these are correct. Which ONE is WRONG?
               </h3>
             </div>
 
             {/* 4 Equation Cards */}
-            <div className="grid grid-cols-1 gap-3 w-full">
+            <div className="grid grid-cols-1 gap-2 sm:gap-2.5 w-full">
               {round.equations.map((eq) => (
                 <button
                   key={eq.id}
                   type="button"
                   onClick={() => handleSelectEquation(eq.id)}
-                  className={`py-4 sm:py-5 px-5 sm:px-6 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-2xl border transition-all shadow-lg flex items-center justify-between group ${
+                  className={`py-2.5 sm:py-3.5 px-3.5 sm:px-6 active:scale-95 font-mono font-black text-base sm:text-xl rounded-xl sm:rounded-2xl border transition-all shadow-md flex items-center justify-between group ${
                     isDark
                       ? 'bg-slate-800/90 hover:bg-slate-750 text-white border-slate-700 hover:border-orange-400'
-                      : 'bg-white hover:bg-orange-50/60 text-slate-900 border-slate-200 hover:border-orange-500 shadow-md'
+                      : 'bg-white hover:bg-orange-50/60 text-slate-900 border-slate-200 hover:border-orange-500 shadow-sm'
                   }`}
                 >
                   <span className={`text-xs font-sans font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -191,7 +191,7 @@ export const FindMistakeGame: React.FC<FindMistakeGameProps> = ({
                   </span>
                   <span className="group-hover:text-orange-500 transition-colors">{eq.text}</span>
                   <AlertCircle
-                    className="w-5 h-5 opacity-60 group-hover:opacity-100 group-hover:text-orange-500 transition-all"
+                    className="w-4 h-4 sm:w-5 sm:h-5 opacity-60 group-hover:opacity-100 group-hover:text-orange-500 transition-all"
                   />
                 </button>
               ))}

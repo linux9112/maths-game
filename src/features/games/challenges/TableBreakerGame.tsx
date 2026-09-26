@@ -146,7 +146,7 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -169,13 +169,13 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
         onToggleMute={audio.toggleMute}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-between p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {/* Brick Wall Grid */}
         <div
-          className={`w-full rounded-3xl p-4 shadow-2xl space-y-2 border backdrop-blur-md transition-colors ${
+          className={`w-full rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-xl space-y-1.5 sm:space-y-2 border backdrop-blur-md transition-colors ${
             isDark
               ? 'bg-slate-900/90 border-slate-800 shadow-slate-950/80'
-              : 'bg-white/95 border-slate-200 shadow-xl'
+              : 'bg-white/95 border-slate-200 shadow-lg'
           }`}
         >
           <div className="flex justify-between items-center px-1 text-[10px] uppercase font-bold">
@@ -187,13 +187,13 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
             </span>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2">
             {bricks.map((brick) => {
               const isTarget = activeBrickMeta?.id === brick.id;
               return (
                 <div
                   key={brick.id}
-                  className={`h-14 rounded-xl border flex flex-col items-center justify-center font-mono font-bold text-sm transition-all ${
+                  className={`h-9 sm:h-12 rounded-lg sm:rounded-xl border flex flex-col items-center justify-center font-mono font-bold text-xs sm:text-sm transition-all ${
                     brick.isBroken
                       ? isDark
                         ? 'opacity-10 scale-90 border-transparent bg-slate-800'
@@ -217,12 +217,12 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
 
         {/* Active Question & Options */}
         {state.status === 'PLAYING' && state.currentQuestion && (
-          <div className="w-full space-y-4 my-auto">
+          <div className="w-full space-y-2.5 sm:space-y-4 mt-2.5 sm:mt-4">
             <div
-              className={`p-5 rounded-2xl border text-center shadow-xl backdrop-blur-md transition-colors ${
+              className={`p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border text-center shadow-lg backdrop-blur-md transition-colors ${
                 isDark
                   ? 'bg-slate-900/90 border-slate-800 shadow-slate-950/80'
-                  : 'bg-white/95 border-slate-200 shadow-lg'
+                  : 'bg-white/95 border-slate-200 shadow-md'
               }`}
             >
               <span
@@ -231,22 +231,22 @@ export const TableBreakerGame: React.FC<TableBreakerGameProps> = ({
               >
                 Break Target Brick
               </span>
-              <div className="text-4xl sm:text-5xl font-black font-mono mt-1">
+              <div className="text-2xl sm:text-4xl font-black font-mono mt-0.5">
                 {state.currentQuestion.promptText}
               </div>
             </div>
 
             {state.currentQuestion.options && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 {state.currentQuestion.options.map((opt, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleChoice(opt)}
-                    className={`py-4 active:scale-95 font-mono font-black text-xl rounded-2xl border transition-all shadow-lg ${
+                    className={`py-2.5 sm:py-3.5 active:scale-95 font-mono font-black text-lg sm:text-xl rounded-xl sm:rounded-2xl border transition-all shadow-md ${
                       isDark
                         ? 'bg-slate-800/90 hover:bg-indigo-600 text-white border-slate-700 hover:border-indigo-400'
-                        : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-200 hover:border-indigo-500 shadow-md'
+                        : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-200 hover:border-indigo-500 shadow-sm'
                     }`}
                   >
                     {opt}

@@ -125,7 +125,7 @@ export const CalculationRunnerGame: React.FC<CalculationRunnerGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -149,11 +149,11 @@ export const CalculationRunnerGame: React.FC<CalculationRunnerGameProps> = ({
       />
 
       {/* 3-Lane Perspective Runner Track */}
-      <div className="flex-1 relative overflow-hidden flex flex-col items-center justify-between p-4">
+      <div className="flex-1 relative overflow-hidden flex flex-col items-center justify-between p-2.5 sm:p-4 min-h-0">
         {/* Active Equation Header */}
         {state.status === 'PLAYING' && state.currentQuestion && (
           <div
-            className={`px-6 py-3 rounded-2xl border shadow-xl text-center backdrop-blur-md z-10 transition-colors ${
+            className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl border shadow-xl text-center backdrop-blur-md z-10 transition-colors ${
               isDark
                 ? 'bg-slate-900/90 border-slate-700 shadow-slate-950/80'
                 : 'bg-white/95 border-slate-200 shadow-lg'
@@ -165,7 +165,7 @@ export const CalculationRunnerGame: React.FC<CalculationRunnerGameProps> = ({
             >
               Solve & Switch To Safe Lane
             </span>
-            <div className="text-3xl sm:text-4xl font-black font-mono mt-0.5">
+            <div className="text-2xl sm:text-4xl font-black font-mono mt-0.5">
               {state.currentQuestion.promptText}
             </div>
           </div>
@@ -231,7 +231,7 @@ export const CalculationRunnerGame: React.FC<CalculationRunnerGameProps> = ({
             <button
               type="button"
               onClick={() => switchLane(0)}
-              className={`py-3 rounded-xl font-bold text-sm border flex items-center justify-center gap-1 transition-all ${
+              className={`py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm border flex items-center justify-center gap-1 transition-all ${
                 runnerLane === 0
                   ? 'text-white font-black shadow-lg'
                   : isDark
@@ -245,7 +245,7 @@ export const CalculationRunnerGame: React.FC<CalculationRunnerGameProps> = ({
             <button
               type="button"
               onClick={() => switchLane(1)}
-              className={`py-3 rounded-xl font-bold text-sm border flex items-center justify-center gap-1 transition-all ${
+              className={`py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm border flex items-center justify-center gap-1 transition-all ${
                 runnerLane === 1
                   ? 'text-white font-black shadow-lg'
                   : isDark
@@ -259,7 +259,7 @@ export const CalculationRunnerGame: React.FC<CalculationRunnerGameProps> = ({
             <button
               type="button"
               onClick={() => switchLane(2)}
-              className={`py-3 rounded-xl font-bold text-sm border flex items-center justify-center gap-1 transition-all ${
+              className={`py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm border flex items-center justify-center gap-1 transition-all ${
                 runnerLane === 2
                   ? 'text-white font-black shadow-lg'
                   : isDark

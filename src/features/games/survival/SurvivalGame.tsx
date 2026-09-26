@@ -67,7 +67,7 @@ export const SurvivalGame: React.FC<SurvivalGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -91,9 +91,9 @@ export const SurvivalGame: React.FC<SurvivalGameProps> = ({
       />
 
       {/* Main Survival Arena */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {/* Wave Banner */}
-        <div className="flex items-center justify-between w-full mb-4 px-2">
+        <div className="flex items-center justify-between w-full mb-2 sm:mb-4 px-1 sm:px-2">
           <div
             className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1.5 border shadow-sm ${
               isDark
@@ -114,10 +114,10 @@ export const SurvivalGame: React.FC<SurvivalGameProps> = ({
         </div>
 
         {state.status === 'PLAYING' && state.currentQuestion && (
-          <div className="w-full space-y-6">
+          <div className="w-full space-y-3 sm:space-y-5">
             {/* Equation Card */}
             <div
-              className={`w-full p-8 rounded-3xl text-center border shadow-2xl transition-all backdrop-blur-md ${
+              className={`w-full p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl text-center border shadow-2xl transition-all backdrop-blur-md ${
                 state.feedback === 'correct'
                   ? 'bg-emerald-950/40 border-emerald-500/60 shadow-emerald-900/40 scale-105'
                   : state.feedback === 'incorrect'
@@ -127,23 +127,23 @@ export const SurvivalGame: React.FC<SurvivalGameProps> = ({
                   : 'bg-white/95 border-slate-200 shadow-xl'
               }`}
             >
-              <div className="text-4xl sm:text-6xl font-black font-mono tracking-tight py-2">
+              <div className="text-2xl sm:text-4xl md:text-5xl font-black font-mono tracking-tight py-1 sm:py-2">
                 {state.currentQuestion.promptText}
               </div>
             </div>
 
             {/* 4 Choices */}
             {state.currentQuestion.options && (
-              <div className="grid grid-cols-2 gap-3 w-full">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full">
                 {state.currentQuestion.options.map((opt, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleChoice(opt)}
-                    className={`py-5 px-4 active:scale-95 font-mono font-black text-2xl rounded-2xl border transition-all shadow-lg ${
+                    className={`py-2.5 sm:py-4 px-3 active:scale-95 font-mono font-black text-lg sm:text-2xl rounded-xl sm:rounded-2xl border transition-all shadow-md ${
                       isDark
                         ? 'bg-slate-800/90 hover:bg-rose-600 text-white border-slate-700 hover:border-rose-400'
-                        : 'bg-white hover:bg-rose-50 text-slate-900 border-slate-200 hover:border-rose-500 shadow-md'
+                        : 'bg-white hover:bg-rose-50 text-slate-900 border-slate-200 hover:border-rose-500 shadow-sm'
                     }`}
                   >
                     {opt}

@@ -93,7 +93,7 @@ export const ArithmeticPractice: React.FC<ArithmeticPracticeProps> = ({
   const opMeta = OPERATOR_METAS[question.operator];
 
   return (
-    <div className="flex-1 flex flex-col justify-between max-w-xl md:max-w-2xl mx-auto w-full my-auto space-y-3 sm:space-y-5">
+    <div className="flex-1 flex flex-col justify-between max-w-xl md:max-w-2xl mx-auto w-full my-auto min-h-0 overflow-y-auto space-y-2.5 sm:space-y-5 p-2 sm:p-4">
       {/* Top HUD: Progress Bar, Combos, and Controls */}
       <div className="space-y-1.5 sm:space-y-2">
         <div className="flex items-center justify-between text-xs font-bold text-slate-400">
@@ -133,8 +133,8 @@ export const ArithmeticPractice: React.FC<ArithmeticPracticeProps> = ({
       {/* Main Calculation Display Card */}
       <div
         key={`card_${question.id}_${shakeKey}`}
-        className={`rounded-3xl bg-slate-800/90 border shadow-2xl text-center transition-all ${
-          isKeyboardOpen ? 'p-3.5 sm:p-6 space-y-2 sm:space-y-4' : 'p-5 sm:p-10 space-y-4 sm:space-y-6'
+        className={`rounded-2xl sm:rounded-3xl bg-slate-800/90 border shadow-2xl text-center transition-all ${
+          isKeyboardOpen ? 'p-3 sm:p-5 space-y-2 sm:space-y-3' : 'p-3.5 sm:p-8 space-y-3 sm:space-y-5'
         } ${
           inputFeedback === 'incorrect' || choiceFeedback === 'incorrect'
             ? 'border-rose-500/80 shadow-rose-500/20 animate-shake'
@@ -188,9 +188,9 @@ export const ArithmeticPractice: React.FC<ArithmeticPracticeProps> = ({
                   type="button"
                   disabled={choiceFeedback !== 'idle'}
                   onClick={() => onSelectOption(idx)}
-                  className={`relative py-3.5 sm:py-4 px-4 rounded-2xl font-mono text-2xl sm:text-3xl font-extrabold border transition-all duration-100 flex items-center justify-center select-none active:scale-95 ${btnStyle}`}
+                  className={`relative py-2.5 sm:py-4 px-3 sm:px-4 rounded-xl sm:rounded-2xl font-mono text-xl sm:text-3xl font-extrabold border transition-all duration-100 flex items-center justify-center select-none active:scale-95 ${btnStyle}`}
                 >
-                  <span className="absolute top-2 left-2 text-[10px] font-sans font-bold px-1.5 py-0.5 rounded bg-black/30 text-slate-300">
+                  <span className="absolute top-1.5 sm:top-2 left-2 text-[10px] font-sans font-bold px-1.5 py-0.5 rounded bg-black/30 text-slate-300">
                     {idx + 1}
                   </span>
                   <span>{opt}</span>

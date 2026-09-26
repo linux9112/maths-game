@@ -69,7 +69,7 @@ export const TablePracticeCard: React.FC<TablePracticeCardProps> = ({
   }, [onExit]);
 
   return (
-    <div className="flex-1 flex flex-col justify-between max-w-xl md:max-w-2xl mx-auto w-full h-full p-2 sm:p-4 space-y-2 sm:space-y-3">
+    <div className="flex-1 flex flex-col justify-between max-w-xl md:max-w-2xl mx-auto w-full min-h-0 overflow-y-auto p-2 sm:p-4 space-y-2 sm:space-y-3">
       {/* Top HUD */}
       <div className="flex items-center justify-between py-1">
         <div className="flex items-center gap-2">
@@ -110,8 +110,8 @@ export const TablePracticeCard: React.FC<TablePracticeCardProps> = ({
 
       {/* Active Calculation Question Card */}
       <div
-        className={`flex-1 flex flex-col items-center justify-center rounded-3xl bg-slate-800/90 border border-slate-700/80 shadow-2xl text-center my-auto transition-all ${
-          keyboardOpen ? 'p-3 sm:p-5 space-y-3' : 'p-5 sm:p-10 space-y-5 sm:space-y-6'
+        className={`flex-1 flex flex-col items-center justify-center rounded-2xl sm:rounded-3xl bg-slate-800/90 border border-slate-700/80 shadow-2xl text-center my-auto transition-all ${
+          keyboardOpen ? 'p-3 sm:p-5 space-y-2.5 sm:space-y-3' : 'p-3.5 sm:p-8 space-y-3.5 sm:space-y-6'
         }`}
       >
         <div

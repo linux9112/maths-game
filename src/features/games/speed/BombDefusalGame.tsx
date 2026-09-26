@@ -112,7 +112,7 @@ export const BombDefusalGame: React.FC<BombDefusalGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -136,27 +136,27 @@ export const BombDefusalGame: React.FC<BombDefusalGameProps> = ({
       />
 
       {/* Bomb Module Arena */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative">
         {state.status === 'PLAYING' && state.currentQuestion && (
           <div
-            className={`w-full border-2 rounded-3xl p-6 shadow-2xl space-y-6 backdrop-blur-md transition-colors ${
+            className={`w-full border-2 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-2xl space-y-2.5 sm:space-y-4 backdrop-blur-md transition-colors ${
               isDark
                 ? 'bg-slate-900/90 border-slate-700 shadow-slate-950/80'
                 : 'bg-white/95 border-slate-200 shadow-xl'
             }`}
           >
             {/* Detonator Digital Ticking Header */}
-            <div className={`flex items-center justify-between border-b pb-4 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+            <div className={`flex items-center justify-between border-b pb-2 sm:pb-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
               <div className="flex items-center gap-2">
-                <Bomb className="w-6 h-6 text-red-500 animate-pulse" />
-                <span className={`font-mono font-black text-sm uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                <Bomb className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 animate-pulse" />
+                <span className={`font-mono font-black text-xs sm:text-sm uppercase tracking-widest ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   {currentWire.colorName}
                 </span>
               </div>
 
               {/* Digital Fuse Clock */}
               <div
-                className={`font-mono font-black text-2xl px-3 py-1 rounded-xl border shadow-inner ${
+                className={`font-mono font-black text-xl sm:text-2xl px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-xl border shadow-inner ${
                   isDark
                     ? 'bg-slate-950 text-red-400 border-red-900/60'
                     : 'bg-red-50 text-red-600 border-red-200'
@@ -167,7 +167,7 @@ export const BombDefusalGame: React.FC<BombDefusalGameProps> = ({
             </div>
 
             {/* Spark Fuse Line */}
-            <div className="space-y-1">
+            <div className="space-y-0.5 sm:space-y-1">
               <div className={`flex justify-between text-[10px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 <span>Fuse Burn</span>
                 <span className="text-red-500 flex items-center gap-1 font-bold">
@@ -175,7 +175,7 @@ export const BombDefusalGame: React.FC<BombDefusalGameProps> = ({
                   Active
                 </span>
               </div>
-              <div className={`w-full h-2 rounded-full overflow-hidden ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}>
+              <div className={`w-full h-1.5 sm:h-2 rounded-full overflow-hidden ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}>
                 <div
                   className="h-full bg-gradient-to-r from-red-500 via-amber-500 to-yellow-300 transition-all duration-100"
                   style={{ width: `${fusePercent}%` }}
@@ -184,11 +184,11 @@ export const BombDefusalGame: React.FC<BombDefusalGameProps> = ({
             </div>
 
             {/* Wire Visual Representation */}
-            <div className="flex justify-between gap-2 py-2">
+            <div className="flex justify-between gap-1.5 sm:gap-2 py-1 sm:py-2">
               {wires.map((w) => (
-                <div key={w.id} className="flex-1 flex flex-col items-center gap-1">
+                <div key={w.id} className="flex-1 flex flex-col items-center gap-0.5 sm:gap-1">
                   <div
-                    className={`w-full h-8 rounded-lg border flex items-center justify-center transition-all ${
+                    className={`w-full h-6 sm:h-8 rounded-lg border flex items-center justify-center transition-all ${
                       w.isCut
                         ? isDark
                           ? 'bg-slate-800 border-slate-700 opacity-40'
@@ -196,9 +196,9 @@ export const BombDefusalGame: React.FC<BombDefusalGameProps> = ({
                         : `${w.colorClass} shadow-md`
                     }`}
                   >
-                    {w.isCut && <Scissors className="w-4 h-4 text-slate-500" />}
+                    {w.isCut && <Scissors className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500" />}
                   </div>
-                  <span className={`text-[10px] font-mono ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <span className={`text-[9px] sm:text-[10px] font-mono ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                     #{w.id + 1}
                   </span>
                 </div>
@@ -207,38 +207,38 @@ export const BombDefusalGame: React.FC<BombDefusalGameProps> = ({
 
             {/* Question Code Matrix */}
             <div
-              className={`p-6 rounded-2xl border text-center shadow-inner ${
+              className={`p-3 sm:p-5 rounded-xl sm:rounded-2xl border text-center shadow-inner ${
                 isDark
                   ? 'bg-slate-950 border-slate-800'
                   : 'bg-slate-50 border-slate-200'
               }`}
             >
               <div
-                className="text-[10px] uppercase tracking-widest font-mono font-bold mb-1"
+                className="text-[9px] sm:text-[10px] uppercase tracking-widest font-mono font-bold mb-0.5 sm:mb-1"
                 style={{ color: theme.accent }}
               >
                 Defusal Code
               </div>
-              <div className="font-mono font-black text-4xl">
+              <div className="font-mono font-black text-2xl sm:text-4xl leading-tight">
                 {state.currentQuestion.promptText}
               </div>
             </div>
 
             {/* Cut Choice Buttons */}
             {state.currentQuestion.options && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 {state.currentQuestion.options.map((opt, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleCut(opt)}
-                    className={`py-4 px-3 active:scale-95 font-mono font-black text-xl rounded-2xl border transition-all shadow-md flex items-center justify-center gap-2 ${
+                    className={`py-2.5 sm:py-3.5 px-2.5 sm:px-3 active:scale-95 font-mono font-black text-base sm:text-xl rounded-xl sm:rounded-2xl border transition-all shadow-md flex items-center justify-center gap-1.5 sm:gap-2 ${
                       isDark
                         ? 'bg-slate-800 hover:bg-red-600 text-white border-slate-700 hover:border-red-400'
                         : 'bg-white hover:bg-red-50 text-slate-900 border-slate-200 hover:border-red-500'
                     }`}
                   >
-                    <Scissors className="w-5 h-5 text-slate-400 group-hover:text-red-500" />
+                    <Scissors className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-hover:text-red-500 flex-shrink-0" />
                     <span>Cut: {opt}</span>
                   </button>
                 ))}

@@ -156,7 +156,7 @@ export const RainCalculationGame: React.FC<RainCalculationGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col h-full min-h-0 select-none overflow-hidden relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -257,7 +257,7 @@ export const RainCalculationGame: React.FC<RainCalculationGameProps> = ({
                   key={idx}
                   type="button"
                   onClick={() => handlePop(option)}
-                  className={`py-3 px-2 active:scale-95 font-mono font-bold text-base rounded-xl border transition-all shadow-md ${
+                  className={`py-2 sm:py-3 px-1 sm:px-2 active:scale-95 font-mono font-bold text-sm sm:text-base rounded-xl border transition-all shadow-sm sm:shadow-md ${
                     isDark
                       ? 'bg-slate-800 hover:bg-cyan-600 text-white border-slate-700 hover:border-cyan-400'
                       : 'bg-slate-50 hover:bg-cyan-50 text-slate-900 border-slate-200 hover:border-cyan-500'

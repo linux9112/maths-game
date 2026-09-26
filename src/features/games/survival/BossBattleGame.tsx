@@ -172,7 +172,7 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -196,10 +196,10 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
       />
 
       {/* RPG Combat Arena */}
-      <div className="flex-1 flex flex-col items-center justify-between p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-between p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {/* Boss Status Bar Card */}
         <div
-          className={`w-full rounded-3xl p-4 shadow-2xl backdrop-blur-sm space-y-3 border transition-colors ${
+          className={`w-full rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-2xl backdrop-blur-sm space-y-2 sm:space-y-3 border transition-colors ${
             isDark
               ? 'bg-slate-900/90 border-slate-800 shadow-slate-950/80'
               : 'bg-white/95 border-slate-200 shadow-xl'
@@ -207,12 +207,12 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-3xl">{currentBoss.avatarIcon}</span>
+              <span className="text-2xl sm:text-3xl">{currentBoss.avatarIcon}</span>
               <div>
-                <h3 className="font-black text-base leading-tight">
+                <h3 className="font-black text-sm sm:text-base leading-tight">
                   {currentBoss.name}
                 </h3>
-                <p className="text-[10px] uppercase tracking-wider text-rose-500 font-bold">
+                <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-rose-500 font-bold">
                   {currentBoss.title}
                 </p>
               </div>
@@ -224,7 +224,7 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
           </div>
 
           {/* Boss HP Bar */}
-          <div className={`w-full h-3 rounded-full overflow-hidden border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
+          <div className={`w-full h-2.5 sm:h-3 rounded-full overflow-hidden border ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
             <div
               className="h-full bg-gradient-to-r from-red-600 to-rose-500 transition-all duration-300"
               style={{ width: `${bossHpPercent}%` }}
@@ -232,14 +232,14 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
           </div>
 
           {/* Boss Charge Attack Bar */}
-          <div className="space-y-1">
-            <div className={`flex justify-between text-[10px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+          <div className="space-y-0.5 sm:space-y-1">
+            <div className={`flex justify-between text-[9px] sm:text-[10px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               <span>Boss Attack Charge</span>
               <span className="text-amber-500 font-mono font-bold">
                 {(currentBoss.attackIntervalSec - bossChargeSec).toFixed(1)}s
               </span>
             </div>
-            <div className={`w-full h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
+            <div className={`w-full h-1 sm:h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
               <div
                 className="h-full bg-amber-400 transition-all duration-100"
                 style={{ width: `${bossChargePercent}%` }}
@@ -249,9 +249,9 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
         </div>
 
         {/* Combat Sprite Arena */}
-        <div className="my-auto flex items-center justify-center relative py-4">
+        <div className="my-auto flex items-center justify-center relative py-1 sm:py-3">
           <div
-            className={`text-8xl sm:text-9xl transition-transform ${
+            className={`text-5xl sm:text-7xl md:text-8xl transition-transform ${
               isBossHurt
                 ? 'scale-90 opacity-60 animate-shake'
                 : isPlayerHurt
@@ -263,9 +263,9 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
           </div>
           {lastAttackEffect && (
             <div
-              className={`absolute top-0 font-black text-2xl animate-bounce pointer-events-none ${
+              className={`absolute top-0 font-black text-xl sm:text-2xl animate-bounce pointer-events-none ${
                 lastAttackEffect.isCrit
-                  ? 'text-amber-400 drop-shadow-[0_0_12px_rgba(251,191,36,0.9)] text-3xl'
+                  ? 'text-amber-400 drop-shadow-[0_0_12px_rgba(251,191,36,0.9)] text-2xl sm:text-3xl'
                   : 'text-red-500'
               }`}
             >
@@ -276,34 +276,34 @@ export const BossBattleGame: React.FC<BossBattleGameProps> = ({
 
         {/* Player Attack Equation Card & Choices */}
         {state.status === 'PLAYING' && state.currentQuestion && (
-          <div className="w-full space-y-3 z-20">
+          <div className="w-full space-y-2.5 sm:space-y-3 z-20">
             <div
-              className={`p-4 rounded-2xl border text-center shadow-xl backdrop-blur-md transition-colors ${
+              className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-center shadow-xl backdrop-blur-md transition-colors ${
                 isDark
                   ? 'bg-slate-900/90 border-slate-800 shadow-slate-950/80'
                   : 'bg-white/95 border-slate-200 shadow-lg'
               }`}
             >
               <span
-                className="text-[10px] uppercase tracking-widest font-black flex items-center justify-center gap-1"
+                className="text-[9px] sm:text-[10px] uppercase tracking-widest font-black flex items-center justify-center gap-1"
                 style={{ color: theme.accent }}
               >
                 <Swords className="w-3.5 h-3.5" />
                 Cast Math Spell
               </span>
-              <div className="text-3xl sm:text-4xl font-black font-mono mt-1">
+              <div className="text-2xl sm:text-4xl font-black font-mono mt-0.5 sm:mt-1">
                 {state.currentQuestion.promptText}
               </div>
             </div>
 
             {state.currentQuestion.options && (
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
                 {state.currentQuestion.options.map((opt, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleAttack(opt)}
-                    className={`py-4 px-3 active:scale-95 font-mono font-black text-xl rounded-2xl border transition-all shadow-md ${
+                    className={`py-2.5 sm:py-3.5 px-2.5 sm:px-3 active:scale-95 font-mono font-black text-base sm:text-xl rounded-xl sm:rounded-2xl border transition-all shadow-md ${
                       isDark
                         ? 'bg-slate-800/90 hover:bg-purple-600 text-white border-slate-700 hover:border-purple-400'
                         : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500'

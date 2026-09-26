@@ -101,4 +101,50 @@ describe('GameSummaryModal', () => {
     fireEvent.click(drillBtn);
     expect(onPracticeMistakes).toHaveBeenCalledWith(summaryWithMistakes.mistakeItems);
   });
+
+  it('renders Timed Out badge instead of strikethrough -999999 for timed out questions', () => {
+    const summaryWithTimeout: GameSummaryData = {
+      ...mockSummary,
+      status: 'GAME_OVER',
+      performanceGrade: 'C',
+      accuracyPercentage: 50,
+      mistakeItems: [
+        {
+          question: {
+            id: 'timeout_q',
+            operator: '*',
+            operandA: 9,
+            operandB: 9,
+            answer: 81,
+            promptText: '9 × 9',
+            displayOperator: '×',
+            answerStr: '81',
+            difficulty: 'normal',
+            category: 'game',
+          },
+          userAnswer: -999999,
+          expectedAnswer: 81,
+          responseTimeMs: 5000,
+          solveTimeMs: 5000,
+          timestamp: Date.now(),
+          pedagogicalHint: '9 × 9 = 81',
+        },
+      ],
+    };
+
+    render(
+      <GameSummaryModal
+        isOpen={true}
+        gameTitle="Bomb Defusal"
+        summary={summaryWithTimeout}
+        onPlayAgain={vi.fn()}
+        onBackToArcade={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText('⏱ Timed Out')).toBeInTheDocument();
+    expect(screen.queryByText('-999999')).not.toBeInTheDocument();
+    expect(screen.queryByText('999999')).not.toBeInTheDocument();
+    expect(screen.getByText('= 81')).toBeInTheDocument();
+  });
 });

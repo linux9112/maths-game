@@ -71,7 +71,7 @@ export const OperationSwitchGame: React.FC<OperationSwitchGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -94,19 +94,19 @@ export const OperationSwitchGame: React.FC<OperationSwitchGameProps> = ({
         onToggleMute={audio.toggleMute}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {/* Switch Alert Banner */}
         {switchAlert && (
-          <div className="absolute top-2 px-4 py-1.5 bg-amber-500 text-slate-950 font-black text-xs uppercase tracking-widest rounded-full shadow-lg animate-bounce flex items-center gap-1.5 z-30">
+          <div className="absolute top-2 px-3 sm:px-4 py-1 sm:py-1.5 bg-amber-500 text-slate-950 font-black text-xs uppercase tracking-widest rounded-full shadow-lg animate-bounce flex items-center gap-1.5 z-30">
             <AlertTriangle className="w-4 h-4" />
             OPERATOR SWITCH! WATCH THE SYMBOL
           </div>
         )}
 
         {state.status === 'PLAYING' && state.currentQuestion && (
-          <div className="w-full space-y-6">
+          <div className="w-full space-y-3 sm:space-y-5">
             <div
-              className={`w-full p-8 rounded-3xl text-center border shadow-2xl transition-all backdrop-blur-md ${
+              className={`w-full p-4 sm:p-7 rounded-2xl sm:rounded-3xl text-center border shadow-xl transition-all backdrop-blur-md ${
                 state.feedback === 'correct'
                   ? 'bg-emerald-950/40 border-emerald-500/60 shadow-emerald-900/40 scale-105'
                   : state.feedback === 'incorrect'
@@ -117,14 +117,14 @@ export const OperationSwitchGame: React.FC<OperationSwitchGameProps> = ({
               }`}
             >
               <span
-                className="text-xs uppercase tracking-widest font-black flex items-center justify-center gap-1.5 mb-2"
+                className="text-xs uppercase tracking-widest font-black flex items-center justify-center gap-1.5 mb-1 sm:mb-2"
                 style={{ color: theme.accent }}
               >
                 <RefreshCw className="w-4 h-4 animate-spin" />
                 Cognitive Switch
               </span>
 
-              <div className="text-4xl sm:text-6xl font-black font-mono tracking-tight py-2">
+              <div className="text-2xl sm:text-5xl md:text-6xl font-black font-mono tracking-tight py-1 sm:py-2">
                 {state.currentQuestion.operandA}{' '}
                 <span
                   className="font-extrabold underline decoration-2 underline-offset-8"
@@ -137,16 +137,16 @@ export const OperationSwitchGame: React.FC<OperationSwitchGameProps> = ({
             </div>
 
             {state.currentQuestion.options && (
-              <div className="grid grid-cols-2 gap-3 w-full">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full">
                 {state.currentQuestion.options.map((opt, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleChoice(opt)}
-                    className={`py-5 px-4 active:scale-95 font-mono font-black text-2xl rounded-2xl border transition-all shadow-lg ${
+                    className={`py-2.5 sm:py-4 px-3 sm:px-4 active:scale-95 font-mono font-black text-lg sm:text-2xl rounded-xl sm:rounded-2xl border transition-all shadow-md sm:shadow-lg ${
                       isDark
                         ? 'bg-slate-800/90 hover:bg-teal-600 text-white border-slate-700 hover:border-teal-400'
-                        : 'bg-white hover:bg-teal-50 text-slate-900 border-slate-200 hover:border-teal-500 shadow-md'
+                        : 'bg-white hover:bg-teal-50 text-slate-900 border-slate-200 hover:border-teal-500 shadow-sm'
                     }`}
                   >
                     {opt}

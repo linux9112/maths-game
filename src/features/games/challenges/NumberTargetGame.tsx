@@ -166,7 +166,7 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
         setSelectedTokens([]);
       } else {
         setEvaluationError(`Result is ${acc}, not ${state.currentQuestion.answer}!`);
-        submitAnswer(-999999);
+        submitAnswer(acc);
       }
     } catch {
       setEvaluationError('Incomplete expression');
@@ -175,7 +175,7 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -198,15 +198,15 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
         onToggleMute={audio.toggleMute}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {state.status === 'PLAYING' && puzzle && (
-          <div className="w-full space-y-5">
+          <div className="w-full space-y-2.5 sm:space-y-4">
             {/* Target Header Card */}
             <div
-              className={`p-6 rounded-3xl shadow-2xl text-center space-y-2 border backdrop-blur-md transition-colors ${
+              className={`p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl shadow-xl text-center space-y-1 sm:space-y-2 border backdrop-blur-md transition-colors ${
                 isDark
                   ? 'bg-slate-900/90 border-slate-700/80 shadow-slate-950/80'
-                  : 'bg-white/95 border-slate-200 shadow-xl'
+                  : 'bg-white/95 border-slate-200 shadow-lg'
               }`}
             >
               <span
@@ -216,14 +216,14 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
                 <Target className="w-4 h-4" />
                 Target Number
               </span>
-              <div className="text-5xl sm:text-6xl font-black font-mono">
+              <div className="text-3xl sm:text-5xl font-black font-mono">
                 {puzzle.targetNumber}
               </div>
             </div>
 
             {/* Expression Construction Tray */}
             <div
-              className={`p-4 rounded-2xl border min-h-[60px] flex items-center justify-center flex-wrap gap-2 transition-colors ${
+              className={`p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border min-h-[48px] sm:min-h-[56px] flex items-center justify-center flex-wrap gap-1.5 sm:gap-2 transition-colors ${
                 isDark
                   ? 'bg-slate-900/80 border-slate-800'
                   : 'bg-white/90 border-slate-200 shadow-sm'
@@ -237,7 +237,7 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
                 selectedTokens.map((t, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1.5 rounded-xl font-mono font-black text-xl border shadow-sm"
+                    className="px-2.5 py-1 rounded-lg sm:rounded-xl font-mono font-black text-lg sm:text-xl border shadow-sm"
                     style={{
                       backgroundColor: `${theme.accent}25`,
                       borderColor: `${theme.accent}60`,
@@ -255,17 +255,17 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
             )}
 
             {/* Number Tiles Tray */}
-            <div className="space-y-2">
+            <div className="space-y-1 sm:space-y-2">
               <span className={`text-[10px] uppercase tracking-wider font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 Number Tiles
               </span>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                 {puzzle.tiles.map((tile, i) => (
                   <button
                     key={i}
                     type="button"
                     onClick={() => handleTileClick(tile)}
-                    className={`py-4 active:scale-95 font-mono font-black text-xl rounded-xl border transition-all shadow-md ${
+                    className={`py-2 sm:py-3 active:scale-95 font-mono font-black text-lg sm:text-xl rounded-xl border transition-all shadow-sm ${
                       isDark
                         ? 'bg-slate-800 hover:bg-rose-600 text-white border-slate-700 hover:border-rose-400'
                         : 'bg-white hover:bg-rose-50 text-slate-900 border-slate-200 hover:border-rose-400'
@@ -278,17 +278,17 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
             </div>
 
             {/* Operators Row */}
-            <div className="space-y-2">
+            <div className="space-y-1 sm:space-y-2">
               <span className={`text-[10px] uppercase tracking-wider font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 Operators
               </span>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                 {(['+', '-', '*', '/'] as const).map((op) => (
                   <button
                     key={op}
                     type="button"
                     onClick={() => handleOpClick(op)}
-                    className={`py-3 active:scale-95 font-mono font-black text-xl rounded-xl border transition-all shadow-md ${
+                    className={`py-2 sm:py-2.5 active:scale-95 font-mono font-black text-lg sm:text-xl rounded-xl border transition-all shadow-sm ${
                       isDark
                         ? 'bg-slate-800 hover:bg-amber-600 text-amber-300 border-slate-700 hover:border-amber-400'
                         : 'bg-white hover:bg-amber-50 text-amber-700 border-slate-200 hover:border-amber-400'
@@ -301,11 +301,11 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1">
               <button
                 type="button"
                 onClick={handleClear}
-                className={`py-3.5 active:scale-95 font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 text-sm ${
+                className={`py-2.5 sm:py-3 active:scale-95 font-bold rounded-xl border transition-all flex items-center justify-center gap-1.5 text-xs sm:text-sm ${
                   isDark
                     ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
                     : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200 shadow-sm'
@@ -316,7 +316,7 @@ export const NumberTargetGame: React.FC<NumberTargetGameProps> = ({
               <button
                 type="button"
                 onClick={handleCheckSolution}
-                className="py-3.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-black rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5 text-sm"
+                className="py-2.5 sm:py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-black rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5 text-xs sm:text-sm"
               >
                 <Check className="w-4 h-4 stroke-[3]" /> Check Solution
               </button>

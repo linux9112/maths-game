@@ -68,7 +68,7 @@ export const MemoryCalculationGame: React.FC<MemoryCalculationGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -91,12 +91,12 @@ export const MemoryCalculationGame: React.FC<MemoryCalculationGameProps> = ({
         onToggleMute={audio.toggleMute}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {state.status === 'PLAYING' && state.currentQuestion && (
-          <div className="w-full space-y-6">
+          <div className="w-full space-y-3 sm:space-y-5">
             {/* Flash Memory Card with 3D Flip Effect */}
             <div
-              className={`w-full min-h-[220px] rounded-3xl p-8 text-center border shadow-2xl flex flex-col items-center justify-center transition-all duration-500 transform backdrop-blur-md ${
+              className={`w-full min-h-[150px] sm:min-h-[200px] rounded-2xl sm:rounded-3xl p-4 sm:p-7 text-center border shadow-xl flex flex-col items-center justify-center transition-all duration-500 transform backdrop-blur-md ${
                 isRevealed
                   ? isDark
                     ? 'bg-emerald-950/40 border-emerald-500/60 shadow-emerald-900/40 rotate-0'
@@ -107,7 +107,7 @@ export const MemoryCalculationGame: React.FC<MemoryCalculationGameProps> = ({
               }`}
             >
               <div
-                className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest mb-3"
+                className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest mb-2 sm:mb-3"
                 style={{ color: theme.accent }}
               >
                 {isRevealed ? (
@@ -124,13 +124,13 @@ export const MemoryCalculationGame: React.FC<MemoryCalculationGameProps> = ({
               </div>
 
               {isRevealed ? (
-                <div className="text-4xl sm:text-6xl font-black font-mono tracking-tight animate-fade-in">
+                <div className="text-2xl sm:text-5xl md:text-6xl font-black font-mono tracking-tight animate-fade-in py-1">
                   {state.currentQuestion.promptText}
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-2 py-4">
-                  <Brain className="w-16 h-16 animate-pulse" style={{ color: theme.accent }} />
-                  <span className={`text-sm font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <div className="flex flex-col items-center gap-1.5 sm:gap-2 py-2 sm:py-3">
+                  <Brain className="w-12 h-12 sm:w-16 sm:h-16 animate-pulse" style={{ color: theme.accent }} />
+                  <span className={`text-xs sm:text-sm font-mono ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                     ? ? ?
                   </span>
                 </div>
@@ -139,16 +139,16 @@ export const MemoryCalculationGame: React.FC<MemoryCalculationGameProps> = ({
 
             {/* Answer Choices */}
             {state.currentQuestion.options && (
-              <div className="grid grid-cols-2 gap-3 w-full">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full">
                 {state.currentQuestion.options.map((opt, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleChoice(opt)}
-                    className={`py-5 px-4 active:scale-95 font-mono font-black text-2xl rounded-2xl border transition-all shadow-lg ${
+                    className={`py-2.5 sm:py-4 px-3 sm:px-4 active:scale-95 font-mono font-black text-lg sm:text-2xl rounded-xl sm:rounded-2xl border transition-all shadow-md sm:shadow-lg ${
                       isDark
                         ? 'bg-slate-800/90 hover:bg-emerald-600 text-white border-slate-700 hover:border-emerald-400'
-                        : 'bg-white hover:bg-emerald-50 text-slate-900 border-slate-200 hover:border-emerald-500 shadow-md'
+                        : 'bg-white hover:bg-emerald-50 text-slate-900 border-slate-200 hover:border-emerald-500 shadow-sm'
                     }`}
                   >
                     {opt}

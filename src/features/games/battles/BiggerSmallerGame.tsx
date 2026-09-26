@@ -106,7 +106,7 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -129,29 +129,29 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
         onToggleMute={audio.toggleMute}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {state.status === 'PLAYING' && fact && (
-          <div className="w-full space-y-6">
+          <div className="w-full space-y-3 sm:space-y-5">
             <div
-              className={`p-6 sm:p-8 rounded-3xl shadow-2xl space-y-4 text-center border backdrop-blur-md transition-colors ${
+              className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-2xl space-y-2.5 sm:space-y-3 text-center border backdrop-blur-md transition-colors ${
                 isDark
                   ? 'bg-slate-900/90 border-slate-700/80 shadow-slate-950/80'
                   : 'bg-white/95 border-slate-200 shadow-xl'
               }`}
             >
               <span
-                className="text-xs uppercase tracking-widest font-black flex items-center justify-center gap-1.5"
+                className="text-[10px] sm:text-xs uppercase tracking-widest font-black flex items-center justify-center gap-1.5"
                 style={{ color: theme.accent }}
               >
-                <ArrowUpDown className="w-4 h-4" />
+                <ArrowUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 Threshold Estimation
               </span>
 
-              <div className="text-3xl sm:text-5xl font-black font-mono py-2">
+              <div className="text-2xl sm:text-4xl font-black font-mono py-1 sm:py-2">
                 {fact.promptExpr}
               </div>
 
-              <div className={`text-base sm:text-lg font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              <div className={`text-sm sm:text-base font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 Is it{' '}
                 <span className="font-extrabold" style={{ color: theme.accent }}>
                   GREATER
@@ -162,7 +162,7 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
                 </span>{' '}
                 than{' '}
                 <span
-                  className="font-mono font-black text-2xl underline decoration-2 underline-offset-4"
+                  className="font-mono font-black text-xl sm:text-2xl underline decoration-2 underline-offset-4"
                   style={{ textDecorationColor: theme.accent }}
                 >
                   {fact.threshold}
@@ -171,18 +171,18 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 w-full">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full">
               <button
                 type="button"
                 onClick={() => submitAnswer(1)}
-                className={`py-5 sm:py-6 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-2xl border transition-all shadow-lg flex flex-col items-center justify-center gap-1 ${
+                className={`py-3 sm:py-4 px-2.5 sm:px-3 active:scale-95 font-mono font-black text-base sm:text-xl rounded-xl sm:rounded-2xl border transition-all shadow-md flex flex-col items-center justify-center gap-0.5 sm:gap-1 ${
                   isDark
                     ? 'bg-slate-800/90 hover:bg-purple-600 text-white border-slate-700 hover:border-purple-400'
-                    : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500 shadow-md'
+                    : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500 shadow-sm'
                 }`}
               >
                 <span>GREATER (&gt;)</span>
-                <span className={`text-xs font-sans ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <span className={`text-[10px] sm:text-xs font-sans ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Above {fact.threshold}
                 </span>
               </button>
@@ -190,14 +190,14 @@ export const BiggerSmallerGame: React.FC<BiggerSmallerGameProps> = ({
               <button
                 type="button"
                 onClick={() => submitAnswer(2)}
-                className={`py-5 sm:py-6 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-2xl border transition-all shadow-lg flex flex-col items-center justify-center gap-1 ${
+                className={`py-3 sm:py-4 px-2.5 sm:px-3 active:scale-95 font-mono font-black text-base sm:text-xl rounded-xl sm:rounded-2xl border transition-all shadow-md flex flex-col items-center justify-center gap-0.5 sm:gap-1 ${
                   isDark
                     ? 'bg-slate-800/90 hover:bg-indigo-600 text-white border-slate-700 hover:border-indigo-400'
-                    : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-200 hover:border-indigo-500 shadow-md'
+                    : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-200 hover:border-indigo-500 shadow-sm'
                 }`}
               >
                 <span>LESS (&lt;)</span>
-                <span className={`text-xs font-sans ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                <span className={`text-[10px] sm:text-xs font-sans ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Below {fact.threshold}
                 </span>
               </button>

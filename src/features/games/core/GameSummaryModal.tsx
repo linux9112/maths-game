@@ -233,9 +233,19 @@ export const GameSummaryModal: React.FC<GameSummaryModalProps> = ({
                         {item.question.promptText}
                       </span>
                       <div className="flex items-center gap-2 font-mono">
-                        <span className="text-red-400 line-through">
-                          {item.userAnswer}
-                        </span>
+                        {(typeof item.userAnswer === 'number' && (item.userAnswer <= -99999 || isNaN(item.userAnswer))) ||
+                        String(item.userAnswer).includes('99999') ||
+                        item.userAnswer === null ||
+                        item.userAnswer === undefined ||
+                        String(item.userAnswer).trim() === '' ? (
+                          <span className="px-2 py-0.5 rounded text-[11px] font-sans font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30">
+                            ⏱ Timed Out
+                          </span>
+                        ) : (
+                          <span className="text-red-400 line-through">
+                            {item.userAnswer}
+                          </span>
+                        )}
                         <span className="text-emerald-400 font-bold">
                           = {item.expectedAnswer}
                         </span>

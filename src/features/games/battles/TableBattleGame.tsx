@@ -117,7 +117,7 @@ export const TableBattleGame: React.FC<TableBattleGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -140,29 +140,29 @@ export const TableBattleGame: React.FC<TableBattleGameProps> = ({
         onToggleMute={audio.toggleMute}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {state.status === 'PLAYING' && battleFact && (
-          <div className="w-full space-y-6">
+          <div className="w-full space-y-3 sm:space-y-5">
             {/* Duel Arena Card */}
             <div
-              className={`p-4 sm:p-8 rounded-3xl shadow-2xl space-y-4 sm:space-y-6 text-center border backdrop-blur-md transition-colors ${
+              className={`p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-2xl space-y-2.5 sm:space-y-4 text-center border backdrop-blur-md transition-colors ${
                 isDark
                   ? 'bg-slate-900/90 border-slate-700/80 shadow-slate-950/80'
                   : 'bg-white/95 border-slate-200 shadow-xl'
               }`}
             >
               <span
-                className="text-xs uppercase tracking-widest font-black flex items-center justify-center gap-1.5"
+                className="text-[10px] sm:text-xs uppercase tracking-widest font-black flex items-center justify-center gap-1.5"
                 style={{ color: theme.accent }}
               >
-                <Swords className="w-4 h-4" />
+                <Swords className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 Which Side Is Greater?
               </span>
 
               {/* Side-by-Side Dual Equation Display */}
-              <div className="flex items-center justify-around gap-2 sm:gap-3 py-2 sm:py-4">
+              <div className="flex items-center justify-around gap-2 sm:gap-3 py-1.5 sm:py-3">
                 <div
-                  className={`flex-1 p-2.5 sm:p-5 rounded-2xl border font-mono font-black text-lg sm:text-3xl shadow-md ${
+                  className={`flex-1 p-2 sm:p-4 rounded-xl sm:rounded-2xl border font-mono font-black text-base sm:text-2xl shadow-md ${
                     isDark
                       ? 'bg-slate-800/80 border-indigo-500/40 text-indigo-300'
                       : 'bg-indigo-50 border-indigo-300 text-indigo-900'
@@ -172,7 +172,7 @@ export const TableBattleGame: React.FC<TableBattleGameProps> = ({
                 </div>
 
                 <div
-                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0 ${
+                  className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full border flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0 ${
                     isDark
                       ? 'bg-slate-950 border-slate-700 text-slate-400'
                       : 'bg-slate-100 border-slate-300 text-slate-600'
@@ -182,7 +182,7 @@ export const TableBattleGame: React.FC<TableBattleGameProps> = ({
                 </div>
 
                 <div
-                  className={`flex-1 p-2.5 sm:p-5 rounded-2xl border font-mono font-black text-lg sm:text-3xl shadow-md ${
+                  className={`flex-1 p-2 sm:p-4 rounded-xl sm:rounded-2xl border font-mono font-black text-base sm:text-2xl shadow-md ${
                     isDark
                       ? 'bg-slate-800/80 border-purple-500/40 text-purple-300'
                       : 'bg-purple-50 border-purple-300 text-purple-900'
@@ -194,38 +194,38 @@ export const TableBattleGame: React.FC<TableBattleGameProps> = ({
             </div>
 
             {/* 3 Comparison Buttons */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full">
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-3 w-full">
               <button
                 type="button"
                 onClick={() => handleComparison(1)}
-                className={`py-3.5 sm:py-6 active:scale-95 font-mono font-black text-2xl sm:text-3xl rounded-2xl border transition-all shadow-lg flex flex-col items-center justify-center ${
+                className={`py-2.5 sm:py-4 px-1 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-xl sm:rounded-2xl border transition-all shadow-md flex flex-col items-center justify-center ${
                   isDark
                     ? 'bg-slate-800/90 hover:bg-indigo-600 text-white border-slate-700 hover:border-indigo-400'
-                    : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-200 hover:border-indigo-500 shadow-md'
+                    : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-200 hover:border-indigo-500 shadow-sm'
                 }`}
               >
                 <span>&lt;</span>
                 <span
-                  className={`text-[9px] sm:text-[10px] font-sans mt-0.5 sm:mt-1 text-center ${
+                  className={`text-[8px] sm:text-[10px] font-sans mt-0.5 text-center leading-tight ${
                     isDark ? 'text-slate-400' : 'text-slate-500'
                   }`}
                 >
-                  Left is Smaller
+                  Left Smaller
                 </span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleComparison(2)}
-                className={`py-3.5 sm:py-6 active:scale-95 font-mono font-black text-2xl sm:text-3xl rounded-2xl border transition-all shadow-lg flex flex-col items-center justify-center ${
+                className={`py-2.5 sm:py-4 px-1 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-xl sm:rounded-2xl border transition-all shadow-md flex flex-col items-center justify-center ${
                   isDark
                     ? 'bg-slate-800/90 hover:bg-amber-600 text-white border-slate-700 hover:border-amber-400'
-                    : 'bg-white hover:bg-amber-50 text-slate-900 border-slate-200 hover:border-amber-500 shadow-md'
+                    : 'bg-white hover:bg-amber-50 text-slate-900 border-slate-200 hover:border-amber-500 shadow-sm'
                 }`}
               >
                 <span>=</span>
                 <span
-                  className={`text-[9px] sm:text-[10px] font-sans mt-0.5 sm:mt-1 text-center ${
+                  className={`text-[8px] sm:text-[10px] font-sans mt-0.5 text-center leading-tight ${
                     isDark ? 'text-slate-400' : 'text-slate-500'
                   }`}
                 >
@@ -236,19 +236,19 @@ export const TableBattleGame: React.FC<TableBattleGameProps> = ({
               <button
                 type="button"
                 onClick={() => handleComparison(3)}
-                className={`py-3.5 sm:py-6 active:scale-95 font-mono font-black text-2xl sm:text-3xl rounded-2xl border transition-all shadow-lg flex flex-col items-center justify-center ${
+                className={`py-2.5 sm:py-4 px-1 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-xl sm:rounded-2xl border transition-all shadow-md flex flex-col items-center justify-center ${
                   isDark
                     ? 'bg-slate-800/90 hover:bg-purple-600 text-white border-slate-700 hover:border-purple-400'
-                    : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500 shadow-md'
+                    : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500 shadow-sm'
                 }`}
               >
                 <span>&gt;</span>
                 <span
-                  className={`text-[9px] sm:text-[10px] font-sans mt-0.5 sm:mt-1 text-center ${
+                  className={`text-[8px] sm:text-[10px] font-sans mt-0.5 text-center leading-tight ${
                     isDark ? 'text-slate-400' : 'text-slate-500'
                   }`}
                 >
-                  Left is Greater
+                  Left Greater
                 </span>
               </button>
             </div>

@@ -108,7 +108,7 @@ export const ClosestAnswerGame: React.FC<ClosestAnswerGameProps> = ({
 
   return (
     <div
-      className={`flex-1 flex flex-col h-full select-none overflow-hidden relative transition-colors duration-300 ${
+      className={`flex-1 flex flex-col min-h-0 select-none overflow-y-auto relative transition-colors duration-300 ${
         isDark ? 'text-white' : 'text-slate-900'
       }`}
       style={{
@@ -131,11 +131,11 @@ export const ClosestAnswerGame: React.FC<ClosestAnswerGameProps> = ({
         onToggleMute={audio.toggleMute}
       />
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-4 max-w-lg mx-auto w-full my-auto relative min-h-0">
         {state.status === 'PLAYING' && state.currentQuestion && (
-          <div className="w-full space-y-6">
+          <div className="w-full space-y-3 sm:space-y-5">
             <div
-              className={`p-6 sm:p-8 rounded-3xl shadow-2xl space-y-3 text-center border backdrop-blur-md transition-colors ${
+              className={`p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xl space-y-2 sm:space-y-3 text-center border backdrop-blur-md transition-colors ${
                 isDark
                   ? 'bg-slate-900/90 border-slate-700/80 shadow-slate-950/80'
                   : 'bg-white/95 border-slate-200 shadow-xl'
@@ -149,7 +149,7 @@ export const ClosestAnswerGame: React.FC<ClosestAnswerGameProps> = ({
                 Rapid Mental Estimation
               </span>
 
-              <div className="text-3xl sm:text-5xl font-black font-mono py-2">
+              <div className="text-2xl sm:text-4xl md:text-5xl font-black font-mono py-1 sm:py-2">
                 {state.currentQuestion.promptText} ≈ ?
               </div>
 
@@ -158,13 +158,13 @@ export const ClosestAnswerGame: React.FC<ClosestAnswerGameProps> = ({
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 w-full">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full">
               {options.map((cand, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => submitAnswer(cand)}
-                  className={`py-5 px-4 active:scale-95 font-mono font-black text-xl sm:text-2xl rounded-2xl border transition-all shadow-lg ${
+                  className={`py-2.5 sm:py-4 px-3 sm:px-4 active:scale-95 font-mono font-black text-lg sm:text-2xl rounded-xl sm:rounded-2xl border transition-all shadow-md sm:shadow-lg ${
                     isDark
                       ? 'bg-slate-800/90 hover:bg-purple-600 text-white border-slate-700 hover:border-purple-400'
                       : 'bg-white hover:bg-purple-50 text-slate-900 border-slate-200 hover:border-purple-500 shadow-md'

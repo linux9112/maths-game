@@ -84,10 +84,10 @@ export const TableModeAChoice: React.FC<TableModeAChoiceProps> = ({
             type="button"
             disabled={disabled || feedback !== 'idle'}
             onClick={() => onSelectOption(index)}
-            className={`relative p-4 sm:p-5 rounded-2xl border-2 font-mono font-black text-2xl sm:text-3xl text-center transition-all duration-150 flex items-center justify-center min-h-[72px] sm:min-h-[84px] shadow-md select-none ${styleClass}`}
+            className={`relative p-2.5 sm:p-5 rounded-xl sm:rounded-2xl border-2 font-mono font-black text-xl sm:text-3xl text-center transition-all duration-150 flex items-center justify-center min-h-[56px] sm:min-h-[84px] shadow-md select-none ${styleClass}`}
           >
             {/* Shortcut Badge */}
-            <span className="absolute top-2 left-2.5 w-5 h-5 rounded-md bg-slate-900/80 border border-slate-700/80 text-[11px] font-bold text-slate-300 flex items-center justify-center">
+            <span className="absolute top-1.5 sm:top-2 left-2 sm:left-2.5 w-4 h-4 sm:w-5 sm:h-5 rounded-md bg-slate-900/80 border border-slate-700/80 text-[10px] sm:text-[11px] font-bold text-slate-300 flex items-center justify-center">
               {index + 1}
             </span>
 
