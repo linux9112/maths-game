@@ -34,7 +34,7 @@ export type AppNavTab =
 
 export const App: React.FC = () => {
   const audio = useAudio();
-  const { profile, levelProgress } = useProgression();
+  const { profile, levelProgress, addXp } = useProgression();
   const [activeTab, setActiveTab] = useState<AppNavTab>('dashboard');
   const [useVirtualKeypad, setUseVirtualKeypad] = useState<boolean>(
     () => SettingsStore.get().useVirtualKeypad
@@ -202,11 +202,11 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === 'tables' && (
-          <TablesFeature useVirtualKeypad={useVirtualKeypad} />
+          <TablesFeature useVirtualKeypad={useVirtualKeypad} onXpEarned={addXp} />
         )}
 
         {activeTab === 'operations' && (
-          <OperationsFeature useVirtualKeypad={useVirtualKeypad} />
+          <OperationsFeature useVirtualKeypad={useVirtualKeypad} onXpEarned={addXp} />
         )}
 
         {activeTab === 'daily' && (

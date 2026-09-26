@@ -96,7 +96,7 @@ export const TableModeBDirect: React.FC<TableModeBDirectProps> = ({
             onBackspace={onBackspace}
             onSubmit={onSubmit}
             onClear={onClear}
-            disabled={feedback !== 'idle'}
+            disabled={feedback === 'correct'}
             onPlaySound={audio.playButtonTap}
           />
         ) : !isKeyboardOpen ? (

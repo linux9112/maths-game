@@ -2,6 +2,7 @@ import {
   FactStat,
   TableMasteryReport,
   TableMasteryBadge,
+  TableQuestionAttempt,
 } from '../types';
 
 export interface FactMasteryComponents {
@@ -154,4 +155,58 @@ export function calculateTableMasteryReport(options: TableReportOptions): TableM
     totalFacts,
     factStats,
   };
+}
+
+/**
+ * Determines whether a question response took significantly longer than normal.
+ * Uses the user's session baseline (median) and complexity buffer.
+ */
+export function isAttemptSlow(
+  solveTimeMs: number,
+  baselineMs: number,
+  table: number,
+  multiplier: number
+): boolean {
+  const base = Math.max(2000, baselineMs);
+  const complexityBuffer = table > 12 || multiplier > 12 ? 1500 : 0;
+  const threshold = Math.max(3500 + complexityBuffer, base * 1.8);
+  return solveTimeMs > threshold;
+}
+
+/**
+ * Calculates priority score for weakness practice:
+ * 1. More wrong attempts (highest priority: 100 pts per wrong attempt)
+ * 2. Much slower response time (15 pts per sec over baseline)
+ * 3. Repeated historical mistakes & low accuracy
+ */
+export function calculateSessionWeaknessScore(
+  attempt: TableQuestionAttempt,
+  baselineMs: number,
+  historicalStat?: FactStat | null
+): number {
+  let score = 0;
+
+  // 1. Wrong attempts weight
+  const wrongCount = attempt.wrongAttempts ?? (attempt.isCorrectFirstTry ? 0 : 1);
+  score += wrongCount * 100;
+
+  // 2. Slow response time weight
+  const base = Math.max(2000, baselineMs);
+  if (attempt.solveTimeMs > base) {
+    const extraSeconds = (attempt.solveTimeMs - base) / 1000;
+    score += Math.round(extraSeconds * 15);
+  }
+
+  // 3. Historical mistakes & low accuracy
+  if (historicalStat && historicalStat.attempts > 0) {
+    const histAccuracy = historicalStat.correctCount / historicalStat.attempts;
+    if (histAccuracy < 1) {
+      score += Math.round((1 - histAccuracy) * 40);
+    }
+    if (historicalStat.consecutiveCorrect === 0) {
+      score += 20;
+    }
+  }
+
+  return score;
 }

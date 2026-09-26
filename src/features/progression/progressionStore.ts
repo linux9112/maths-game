@@ -289,6 +289,80 @@ export class ProgressionStore {
     };
   }
 
+  public recordTableSessionCompletion(params: {
+    sessionId: string;
+    totalQuestions: number;
+    correctFirstTryCount: number;
+    accuracyPercentage: number;
+    maxCombo: number;
+    totalXp: number;
+    fastestResponseTimeMs?: number;
+  }): { xpEarned: number; awarded: boolean; newTotalXp: number } {
+    const AWARDED_SESSIONS_KEY = 'math_awarded_session_ids_v1';
+    let awardedIds: string[] = [];
+    try {
+      const raw = localStorage.getItem(AWARDED_SESSIONS_KEY);
+      if (raw) awardedIds = JSON.parse(raw);
+    } catch {}
+
+    if (awardedIds.includes(params.sessionId)) {
+      return {
+        xpEarned: 0,
+        awarded: false,
+        newTotalXp: this.state.xp,
+      };
+    }
+
+    awardedIds.push(params.sessionId);
+    if (awardedIds.length > 100) awardedIds = awardedIds.slice(-100);
+    try {
+      localStorage.setItem(AWARDED_SESSIONS_KEY, JSON.stringify(awardedIds));
+    } catch {}
+
+    const todayKey = getLocalDateKey();
+    let currentStreak = this.state.currentStreak;
+    let bestStreak = this.state.bestStreak;
+
+    if (this.state.lastActiveDateKey !== todayKey) {
+      if (!this.state.lastActiveDateKey) {
+        currentStreak = 1;
+      } else {
+        const dayDiff = getDayDifference(this.state.lastActiveDateKey, todayKey);
+        if (dayDiff === 1) {
+          currentStreak += 1;
+        } else if (dayDiff > 1) {
+          currentStreak = 1;
+        }
+      }
+      bestStreak = Math.max(bestStreak, currentStreak);
+    }
+
+    const fastestRt =
+      params.fastestResponseTimeMs && params.fastestResponseTimeMs > 0
+        ? this.state.fastestResponseTimeMs === 0
+          ? params.fastestResponseTimeMs
+          : Math.min(this.state.fastestResponseTimeMs, params.fastestResponseTimeMs)
+        : this.state.fastestResponseTimeMs;
+
+    this.state = {
+      ...this.state,
+      totalQuestionsAnswered: this.state.totalQuestionsAnswered + params.totalQuestions,
+      totalCorrectAnswers: this.state.totalCorrectAnswers + params.correctFirstTryCount,
+      currentStreak,
+      bestStreak,
+      lastActiveDateKey: todayKey,
+      fastestResponseTimeMs: fastestRt,
+    };
+
+    const xpResult = this.addXp(params.totalXp);
+
+    return {
+      xpEarned: params.totalXp,
+      awarded: true,
+      newTotalXp: xpResult.newTotalXp,
+    };
+  }
+
   public reset(): void {
     this.state = createInitialProfile();
     try {
@@ -318,6 +392,7 @@ export function useProgression() {
     addXp: store.addXp.bind(store),
     recordQuestionAttempt: store.recordQuestionAttempt.bind(store),
     recordDailyChallengeCompletion: store.recordDailyChallengeCompletion.bind(store),
+    recordTableSessionCompletion: store.recordTableSessionCompletion.bind(store),
     getAchievements: store.getAchievements.bind(store),
   };
 }

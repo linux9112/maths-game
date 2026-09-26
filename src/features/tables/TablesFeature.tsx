@@ -161,6 +161,7 @@ export const TablesFeature: React.FC<TablesFeatureProps> = ({
         summary={practice.summary}
         onRestart={practice.restartSession}
         onClose={practice.exitToConfig}
+        onStartWeaknessPractice={practice.startWeaknessPractice}
       />
     </div>
   );

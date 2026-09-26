@@ -126,6 +126,10 @@ export interface TableQuestionAttempt {
   readonly responseTimeMs: number;
   readonly solveTimeMs: number;
   readonly timestamp: number;
+  readonly wrongAttempts?: number;
+  readonly eventuallyCorrect?: boolean;
+  readonly isSlow?: boolean;
+  readonly weaknessScore?: number;
 }
 
 /**
@@ -158,9 +162,13 @@ export interface TableMasteryReport {
 }
 
 export interface TableSessionSummary {
+  readonly sessionId?: string;
   readonly tableNumbers: number[];
   readonly totalQuestions: number;
   readonly correctFirstTryCount: number;
+  readonly eventuallyCorrectCount?: number;
+  readonly totalWrongAttempts?: number;
+  readonly slowQuestionsCount?: number;
   readonly accuracyPercentage: number;
   readonly averageResponseTimeMs: number;
   readonly maxCombo: number;
@@ -168,6 +176,7 @@ export interface TableSessionSummary {
   readonly elapsedTimeMs: number;
   readonly newlyMasteredTables: number[];
   readonly weakFactsEncountered: string[];
+  readonly weakQuestions?: TableQuestionAttempt[];
 }
 
 export interface TableQueueBuildOptions {

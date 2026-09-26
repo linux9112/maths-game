@@ -1,4 +1,5 @@
-import { TableQuestion, TableQueueBuildOptions } from '../types';
+import { TableQuestion, TableQueueBuildOptions, TableQuestionAttempt } from '../types';
+import { DifficultyTier, IPRNG } from '../../../core/math/types';
 import { clampTable, sanitizeRange } from '../utils/tableSelectionUtils';
 import { distractorEngine } from '../../../core/distractors/distractorEngine';
 
@@ -169,4 +170,142 @@ function fisherYates<T>(array: T[], rng: () => number): void {
     array[i] = array[j];
     array[j] = temp;
   }
+}
+
+export interface WeaknessQueueBuildOptions {
+  readonly weakAttempts: TableQuestionAttempt[];
+  readonly targetCount: number; // 15, 30, 50
+  readonly difficulty?: DifficultyTier;
+  readonly prng?: IPRNG;
+}
+
+/**
+ * Builds a focused question queue targeting ONLY the weak calculations identified.
+ * Intelligently prioritizes the highest weakness scores, repeating them with anti-consecutive spacing
+ * if targetCount exceeds unique facts, and never adding unrelated questions.
+ */
+export function buildWeaknessTableQuestionQueue(options: WeaknessQueueBuildOptions): TableQuestion[] {
+  const { weakAttempts, targetCount, difficulty = 'normal', prng } = options;
+  const rng = prng ? () => prng.next() : Math.random;
+
+  if (!weakAttempts || weakAttempts.length === 0) {
+    return [];
+  }
+
+  // Deduplicate weak facts and extract their fact information
+  const uniqueFactMap = new Map<string, { table: number; multiplier: number; weight: number }>();
+  for (const a of weakAttempts) {
+    const key = `${a.question.table}_${a.question.multiplier}`;
+    const weight = a.weaknessScore && a.weaknessScore > 0 ? a.weaknessScore : 100;
+    const existing = uniqueFactMap.get(key);
+    if (!existing || weight > existing.weight) {
+      uniqueFactMap.set(key, {
+        table: a.question.table,
+        multiplier: a.question.multiplier,
+        weight,
+      });
+    }
+  }
+
+  const sortedUniqueFacts = Array.from(uniqueFactMap.values()).sort((a, b) => b.weight - a.weight);
+  const pool: Array<{ table: number; multiplier: number }> = [];
+
+  if (sortedUniqueFacts.length >= targetCount) {
+    // If we have enough unique weak calculations, pick the top targetCount
+    for (let i = 0; i < targetCount; i++) {
+      pool.push({ table: sortedUniqueFacts[i].table, multiplier: sortedUniqueFacts[i].multiplier });
+    }
+    fisherYates(pool, rng);
+  } else {
+    // Allocate targetCount questions across the weak facts, giving more repetitions to higher-weight facts
+    const totalWeights = sortedUniqueFacts.reduce((sum, f) => sum + f.weight, 0);
+    const counts: number[] = sortedUniqueFacts.map((f) =>
+      Math.max(1, Math.floor((f.weight / totalWeights) * targetCount))
+    );
+
+    let assigned = counts.reduce((a, b) => a + b, 0);
+    let idx = 0;
+    while (assigned < targetCount) {
+      counts[idx % counts.length]++;
+      assigned++;
+      idx++;
+    }
+    while (assigned > targetCount) {
+      const maxIdx = counts.indexOf(Math.max(...counts));
+      if (counts[maxIdx] > 1) {
+        counts[maxIdx]--;
+        assigned--;
+      } else {
+        break;
+      }
+    }
+
+    for (let i = 0; i < sortedUniqueFacts.length; i++) {
+      for (let c = 0; c < counts[i]; c++) {
+        pool.push({ table: sortedUniqueFacts[i].table, multiplier: sortedUniqueFacts[i].multiplier });
+      }
+    }
+
+    // Shuffle with anti-consecutive spacing so identical calculations are not adjacent
+    fisherYates(pool, rng);
+    for (let i = 1; i < pool.length; i++) {
+      if (
+        pool[i].table === pool[i - 1].table &&
+        pool[i].multiplier === pool[i - 1].multiplier &&
+        i + 1 < pool.length
+      ) {
+        for (let j = i + 1; j < pool.length; j++) {
+          if (
+            pool[j].table !== pool[i].table ||
+            pool[j].multiplier !== pool[i].multiplier
+          ) {
+            const temp = pool[i];
+            pool[i] = pool[j];
+            pool[j] = temp;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  const finalPool = pool.slice(0, targetCount);
+
+  return finalPool.map((f, i) => {
+    const operandA = f.table;
+    const operandB = f.multiplier;
+    const answer = operandA * operandB;
+    const promptText = `${operandA} × ${operandB} = ?`;
+
+    const distractorResult = distractorEngine.generate({
+      operator: '*',
+      operandA,
+      operandB,
+      answer,
+      difficulty,
+      count: 3,
+      rng,
+    });
+
+    const factId = `mul_${f.table}_${f.multiplier}`;
+
+    return {
+      id: `weakness_${f.table}_${f.multiplier}_${i}_${Math.floor(rng() * 100000)}`,
+      factId,
+      table: f.table,
+      multiplier: f.multiplier,
+      operator: '*',
+      operandA,
+      operandB,
+      answer,
+      answerStr: answer.toString(),
+      promptText,
+      displayOperator: '×',
+      options: distractorResult.allChoices,
+      correctIndex: distractorResult.correctIndex,
+      difficulty,
+      category: 'table',
+      distractorSources: distractorResult.sources,
+    };
+  });
 }
