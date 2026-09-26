@@ -9,7 +9,15 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'logo.png'],
+      includeAssets: [
+        'favicon.svg',
+        'favicon.png',
+        'logo.png',
+        'icon-192.png',
+        'icon-512.png',
+        'icon-maskable-192.png',
+        'icon-maskable-512.png'
+      ],
       manifest: {
         name: 'Math Calculation Practice & Games',
         short_name: 'MathMastery',
@@ -20,19 +28,38 @@ export default defineConfig({
         orientation: 'portrait-primary',
         icons: [
           {
-            src: '/logo.png',
-            sizes: '192x192 512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          },
-          {
-            src: '/favicon.svg',
+            src: '/icon-192.png',
             sizes: '192x192',
-            type: 'image/svg+xml'
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/icon-maskable-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'maskable'
+          },
+          {
+            src: '/icon-maskable-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          },
+          {
+            src: '/logo.png',
+            sizes: '1024x1024',
+            type: 'image/png',
+            purpose: 'any'
           },
           {
             src: '/favicon.svg',
-            sizes: '512x512',
+            sizes: '192x192 512x512',
             type: 'image/svg+xml',
             purpose: 'any maskable'
           }
