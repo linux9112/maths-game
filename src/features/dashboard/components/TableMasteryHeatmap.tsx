@@ -45,9 +45,9 @@ export const TableMasteryHeatmap: React.FC<TableMasteryHeatmapProps> = ({
   initialSelectedTables,
 }) => {
   const [selectedTables, setSelectedTables] = useState<number[]>(() =>
-    initialSelectedTables ? [...initialSelectedTables] : [8]
+    initialSelectedTables ? [...initialSelectedTables] : [21]
   );
-  const [activeInspectTable, setActiveInspectTable] = useState<number | null>(8);
+  const [activeInspectTable, setActiveInspectTable] = useState<number | null>(21);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [reports, setReports] = useState<Record<number, TableMasteryReport>>(() =>
     tableMasteryStore.getAllTableMasteries(100, 1, 10)
