@@ -256,6 +256,9 @@ export function useTablePractice(options: UseTablePracticeOptions = {}) {
         if (customConfig.inputMode) tableConfigHook.setInputMode(customConfig.inputMode);
         if (customConfig.difficulty) tableConfigHook.setDifficulty(customConfig.difficulty);
         if (customConfig.questionTarget) tableConfigHook.setQuestionTarget(customConfig.questionTarget);
+        if (customConfig.selectedTables && customConfig.selectedTables.length > 0) {
+          tableConfigHook.setSelectedTables([...customConfig.selectedTables]);
+        }
       }
 
       const activeConfig = { ...tableConfigHook.config, ...customConfig };

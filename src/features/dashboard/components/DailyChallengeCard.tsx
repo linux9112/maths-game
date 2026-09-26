@@ -27,39 +27,39 @@ export const DailyChallengeCard: React.FC<DailyChallengeCardProps> = ({
   const isCompleted = record && record.completed;
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-4 sm:p-6 shadow-md flex flex-col justify-between space-y-4">
+    <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-6 shadow-sm flex flex-col justify-between space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Left Info */}
         <div className="flex items-start gap-3 sm:gap-3.5">
-          <div className="p-2.5 sm:p-3 bg-indigo-500/10 rounded-2xl text-indigo-400 border border-indigo-500/20 flex-shrink-0">
+          <div className="p-2.5 sm:p-3 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 rounded-2xl text-indigo-600 dark:text-indigo-400 flex-shrink-0">
             <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-base sm:text-lg font-bold text-white">Daily Challenge</h2>
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Daily Challenge</h2>
               {isCompleted ? (
-                <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30">
                   <CheckCircle2 className="w-3 h-3" /> Completed
                 </span>
               ) : (
-                <span className="inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-500/30">
                   Ready to Play
                 </span>
               )}
             </div>
 
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
               {isCompleted
                 ? `Completed! Score: ${record.score}/10 • Accuracy: ${record.accuracyPercentage}% • Time: ${record.timeSec.toFixed(1)}s`
                 : '10 standard questions (+, −, ×, ÷) consistent worldwide. Solve to maintain your streak!'}
             </p>
 
-            <div className="flex items-center gap-3 mt-2 text-xs text-slate-400 flex-wrap">
-              <span className="flex items-center gap-1 text-purple-400 font-mono">
+            <div className="flex items-center gap-3 mt-2 text-xs text-slate-600 dark:text-slate-400 flex-wrap">
+              <span className="flex items-center gap-1 text-purple-700 dark:text-purple-400 font-mono font-bold">
                 <Clock className="w-3.5 h-3.5" /> Next in: {countdown.formatted}
               </span>
-              <span className="flex items-center gap-1 text-amber-400 font-semibold">
-                <Flame className="w-3.5 h-3.5 fill-amber-400" /> {currentStreak} Day Streak
+              <span className="flex items-center gap-1 text-amber-700 dark:text-amber-400 font-bold">
+                <Flame className="w-3.5 h-3.5 fill-amber-500" /> {currentStreak} Day Streak
               </span>
             </div>
           </div>

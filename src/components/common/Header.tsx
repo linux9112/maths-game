@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calculator, Flame, Zap, Keyboard, Grid3X3, Gamepad2 } from 'lucide-react';
+import { Calculator, Flame, Zap, Keyboard, Grid3X3, Gamepad2, Smartphone } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { SoundToggle } from './SoundToggle';
 import { KeyboardShortcutsModal } from './KeyboardShortcutsModal';
@@ -16,6 +16,7 @@ export interface HeaderProps {
   useVirtualKeypad?: boolean;
   onToggleVirtualKeypad?: () => void;
   onHomeClick?: () => void;
+  onTablesClick?: () => void;
   onGamesClick?: () => void;
   className?: string;
 }
@@ -32,6 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   useVirtualKeypad = false,
   onToggleVirtualKeypad,
   onHomeClick,
+  onTablesClick,
   onGamesClick,
   className = '',
 }) => {
@@ -93,6 +95,19 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right: Quick Settings & Shortcut Trigger */}
           <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+            {/* Tables Shortcut (Grid3X3) */}
+            {onTablesClick && (
+              <button
+                type="button"
+                onClick={onTablesClick}
+                title="Multiplication Tables & Selection Grid"
+                aria-label="Open Multiplication Tables"
+                className="flex p-1.5 sm:p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                <Grid3X3 className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2]" />
+              </button>
+            )}
+
             {/* Games Arcade Shortcut (Visible on tablet/desktop, mobile uses nav bar) */}
             {onGamesClick && (
               <button
@@ -111,15 +126,15 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={onToggleVirtualKeypad}
-                title={`Virtual Keypad: ${useVirtualKeypad ? 'Enabled' : 'Disabled'}`}
-                aria-label={`Toggle virtual keypad, currently ${useVirtualKeypad ? 'enabled' : 'disabled'}`}
+                title={`On-Screen Keypad: ${useVirtualKeypad ? 'Enabled' : 'Disabled'}`}
+                aria-label={`Toggle on-screen keypad, currently ${useVirtualKeypad ? 'enabled' : 'disabled'}`}
                 className={`p-1.5 sm:p-2 rounded-xl transition-colors ${
                   useVirtualKeypad
                     ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                 }`}
               >
-                <Grid3X3 className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2]" />
+                <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2]" />
               </button>
             )}
 

@@ -36,6 +36,7 @@ export const App: React.FC = () => {
   const audio = useAudio();
   const { profile, levelProgress, addXp } = useProgression();
   const [activeTab, setActiveTab] = useState<AppNavTab>('dashboard');
+  const [pendingPracticeTables, setPendingPracticeTables] = useState<number[] | null>(null);
   const [useVirtualKeypad, setUseVirtualKeypad] = useState<boolean>(
     () => SettingsStore.get().useVirtualKeypad
   );
@@ -48,8 +49,13 @@ export const App: React.FC = () => {
     audio.playButtonTap();
   };
 
+  const handlePracticeTables = (tables: number[]) => {
+    setPendingPracticeTables(tables);
+    setActiveTab('tables');
+  };
+
   return (
-    <VisualViewportWrapper className="bg-slate-900 text-slate-100 font-sans">
+    <VisualViewportWrapper className="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-150">
       {/* Header with real progression state */}
       <Header
         title="MathMastery"
@@ -66,6 +72,10 @@ export const App: React.FC = () => {
           setActiveTab('dashboard');
           audio.playButtonTap();
         }}
+        onTablesClick={() => {
+          setActiveTab('tables');
+          audio.playButtonTap();
+        }}
         onGamesClick={() => {
           setActiveTab('games');
           audio.playButtonTap();
@@ -77,7 +87,7 @@ export const App: React.FC = () => {
         {/* Navigation Tabs - Scrolls cleanly on mobile without clipping, centers on desktop */}
         <nav
           aria-label="Main Navigation"
-          className="flex items-center justify-start md:justify-center gap-1 sm:gap-1.5 p-1 sm:p-1.5 bg-slate-800/90 rounded-2xl border border-slate-700/60 shadow-inner mb-4 sm:mb-6 overflow-x-auto scrollbar-none w-full max-w-full flex-shrink-0"
+          className="flex items-center justify-start md:justify-center gap-1 sm:gap-1.5 p-1 sm:p-1.5 bg-slate-200/80 dark:bg-slate-800/90 rounded-2xl border border-slate-300/80 dark:border-slate-700/60 shadow-inner mb-4 sm:mb-6 overflow-x-auto scrollbar-none w-full max-w-full flex-shrink-0"
         >
           <button
             type="button"
@@ -88,7 +98,7 @@ export const App: React.FC = () => {
             className={`flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:py-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex-shrink-0 ${
               activeTab === 'dashboard'
                 ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40'
             }`}
           >
             <LayoutDashboard className="w-3.5 h-3.5" />
@@ -104,7 +114,7 @@ export const App: React.FC = () => {
             className={`flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:py-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex-shrink-0 ${
               activeTab === 'tables'
                 ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40'
             }`}
           >
             <Grid3X3 className="w-3.5 h-3.5" />
@@ -120,7 +130,7 @@ export const App: React.FC = () => {
             className={`flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:py-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex-shrink-0 ${
               activeTab === 'operations'
                 ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40'
             }`}
           >
             <Calculator className="w-3.5 h-3.5" />
@@ -136,7 +146,7 @@ export const App: React.FC = () => {
             className={`flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:py-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex-shrink-0 ${
               activeTab === 'daily'
                 ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40'
             }`}
           >
             <Calendar className="w-3.5 h-3.5" />
@@ -152,7 +162,7 @@ export const App: React.FC = () => {
             className={`flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:py-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex-shrink-0 ${
               activeTab === 'adaptive'
                 ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40'
             }`}
           >
             <Zap className="w-3.5 h-3.5 text-amber-400" />
@@ -168,7 +178,7 @@ export const App: React.FC = () => {
             className={`flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:py-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex-shrink-0 ${
               activeTab === 'games'
                 ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40'
             }`}
           >
             <Gamepad2 className="w-3.5 h-3.5 text-purple-400" />
@@ -184,7 +194,7 @@ export const App: React.FC = () => {
             className={`flex items-center justify-center gap-1.5 py-1.5 px-2.5 sm:py-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex-shrink-0 ${
               activeTab === 'components'
                 ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -197,12 +207,18 @@ export const App: React.FC = () => {
           <ProgressDashboard
             onPracticeWeakness={() => setActiveTab('adaptive')}
             onPlayDaily={() => setActiveTab('daily')}
-            onPracticeTable={() => setActiveTab('tables')}
+            onPracticeTable={(table) => handlePracticeTables([table])}
+            onPracticeTables={handlePracticeTables}
           />
         )}
 
         {activeTab === 'tables' && (
-          <TablesFeature useVirtualKeypad={useVirtualKeypad} onXpEarned={addXp} />
+          <TablesFeature
+            useVirtualKeypad={useVirtualKeypad}
+            onXpEarned={addXp}
+            initialSelectedTables={pendingPracticeTables || undefined}
+            onConsumedInitialTables={() => setPendingPracticeTables(null)}
+          />
         )}
 
         {activeTab === 'operations' && (

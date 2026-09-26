@@ -56,42 +56,43 @@ describe('Progress Dashboard UI Suite', () => {
       expect(buttons.length).toBeGreaterThanOrEqual(100);
     });
 
-    it('opens fact popover with details and practice button on cell click', () => {
+    it('selects table, shows details inspector and triggers practice button on click', () => {
+      const onPracticeTables = vi.fn();
       const onPracticeTable = vi.fn();
-      const mockStats: Record<string, FactStat> = {
-        mul_7_8: {
-          factId: 'mul_7_8',
-          table: 7,
-          multiplier: 8,
-          attempts: 12,
-          correctCount: 11,
-          consecutiveCorrect: 5,
-          totalResponseTimeMs: 18000,
-          avgResponseTimeMs: 1500,
-          lastResponseTimeMs: 1400,
-          lastAttemptTimestamp: Date.now(),
-          masteryScore: 92,
-        },
-      };
 
       render(
         <TableMasteryHeatmap
-          factStats={mockStats}
+          initialSelectedTables={[8]}
           onPracticeTable={onPracticeTable}
+          onPracticeTables={onPracticeTables}
         />
       );
 
-      // Find cell with product "56"
-      const cell56 = screen.getByTitle('7 × 8 = 56');
-      fireEvent.click(cell56);
+      // Find Table 8 cell
+      const table8Cell = screen.getByLabelText(/^Table 8,/);
+      expect(table8Cell).toBeInTheDocument();
+      expect(table8Cell).toHaveAttribute('aria-pressed', 'true');
 
-      // Popover should appear
-      expect(screen.getByText(/7 × 8 = 56/)).toBeInTheDocument();
-      expect(screen.getByText(/92% Mastery/)).toBeInTheDocument();
+      // Click Table 14 to select it as well
+      const table14Cell = screen.getByLabelText(/^Table 14,/);
+      fireEvent.click(table14Cell);
+      expect(table14Cell).toHaveAttribute('aria-pressed', 'true');
+
+      // Click Table 14 again to deselect it (single click to select, single click to deselect)
+      fireEvent.click(table14Cell);
+      expect(table14Cell).toHaveAttribute('aria-pressed', 'false');
+
+      // Click Table 7
+      const table7Cell = screen.getByLabelText(/^Table 7,/);
+      fireEvent.click(table7Cell);
+      expect(table7Cell).toHaveAttribute('aria-pressed', 'true');
+
+      // Inspector card should display Table 7
+      expect(screen.getByText('Table 7')).toBeInTheDocument();
 
       const practiceBtn = screen.getByText(/Practice Table 7/);
       fireEvent.click(practiceBtn);
-      expect(onPracticeTable).toHaveBeenCalledWith(7);
+      expect(onPracticeTables).toHaveBeenCalledWith([7]);
     });
   });
 
@@ -181,7 +182,7 @@ describe('Progress Dashboard UI Suite', () => {
     it('renders main dashboard structure without crashing', () => {
       render(<ProgressDashboard />);
       expect(screen.getByText("Today's Practice")).toBeInTheDocument();
-      expect(screen.getByText('Table Mastery Heatmap')).toBeInTheDocument();
+      expect(screen.getByText(/Table Selection & Mastery Grid/)).toBeInTheDocument();
       expect(screen.getByText('Achievements')).toBeInTheDocument();
     });
   });

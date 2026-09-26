@@ -14,6 +14,7 @@ interface ProgressDashboardProps {
   onPracticeWeakness?: () => void;
   onPlayDaily?: () => void;
   onPracticeTable?: (tableNumber: number) => void;
+  onPracticeTables?: (tableNumbers: number[]) => void;
   onDrillFact?: (factId: string) => void;
 }
 
@@ -21,6 +22,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   onPracticeWeakness,
   onPlayDaily,
   onPracticeTable,
+  onPracticeTables,
   onDrillFact,
 }) => {
   const { profile, levelProgress, getAchievements } = useProgression();
@@ -83,10 +85,11 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
         />
       </div>
 
-      {/* 4. Interactive 10x10 Table Mastery Heatmap */}
+      {/* 4. Interactive Table Mastery 1–100 Selection & Mastery Grid */}
       <TableMasteryHeatmap
         factStats={factStats}
         onPracticeTable={onPracticeTable}
+        onPracticeTables={onPracticeTables}
         onDrillFact={onDrillFact}
       />
 

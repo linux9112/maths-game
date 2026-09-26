@@ -8,8 +8,24 @@
     <meta name="description" content="Offline-first Math Calculation Practice & Gamified Learning Suite" />
     <link rel="manifest" href="/manifest.json" />
     <title>Math Calculation Practice & Games</title>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('math_app_settings_v1');
+          if (saved) {
+            var parsed = JSON.parse(saved);
+            if (parsed && parsed.theme === 'light') {
+              document.documentElement.classList.remove('dark');
+              document.documentElement.classList.add('light');
+              var meta = document.querySelector('meta[name="theme-color"]');
+              if (meta) meta.setAttribute('content', '#f8fafc');
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-slate-900 text-slate-100 min-h-screen antialiased selection:bg-emerald-500 selection:text-white">
+  <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen antialiased selection:bg-emerald-500 selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
