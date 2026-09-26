@@ -499,22 +499,22 @@ describe('Milestone 4 Challenger 2: Empirical Stress & Verification Suite', () =
       expect(getLevelFromXp(24355)).toBe(40);
       expect(getLevelFromXp(34299)).toBe(49);
       expect(getLevelFromXp(34300)).toBe(50);
-      expect(getLevelFromXp(1000000)).toBe(50);
+      expect(getLevelFromXp(98503)).toBe(100);
+      expect(getLevelFromXp(1000000)).toBeGreaterThan(100);
       expect(getLevelFromXp(-50)).toBe(1);
       expect(getLevelFromXp(NaN)).toBe(1);
       expect(getLevelFromXp(Infinity)).toBe(1);
 
       // Rank titles
-      expect(getTitleForLevel(1)).toBe('Novice');
-      expect(getTitleForLevel(9)).toBe('Novice');
-      expect(getTitleForLevel(10)).toBe('Math Explorer');
-      expect(getTitleForLevel(19)).toBe('Math Explorer');
-      expect(getTitleForLevel(20)).toBe('Calculation Specialist');
-      expect(getTitleForLevel(29)).toBe('Calculation Specialist');
-      expect(getTitleForLevel(30)).toBe('Mental Math Wizard');
-      expect(getTitleForLevel(39)).toBe('Mental Math Wizard');
-      expect(getTitleForLevel(40)).toBe('Grandmaster');
-      expect(getTitleForLevel(50)).toBe('Grandmaster');
+      expect(getTitleForLevel(1)).toBe('Beginner');
+      expect(getTitleForLevel(9)).toBe('Number Solver');
+      expect(getTitleForLevel(10)).toBe('Math Solver');
+      expect(getTitleForLevel(20)).toBe('Mental Math Solver');
+      expect(getTitleForLevel(30)).toBe('Math Warrior');
+      expect(getTitleForLevel(40)).toBe('Table Challenger');
+      expect(getTitleForLevel(50)).toBe('Table Expert');
+      expect(getTitleForLevel(100)).toBe('Math Master');
+      expect(getTitleForLevel(105)).toBe('Grandmaster');
 
       // Level Progress representation
       const progL1 = getLevelProgress(50);
@@ -524,11 +524,11 @@ describe('Milestone 4 Challenger 2: Empirical Stress & Verification Suite', () =
       expect(progL1.xpInCurrentLevel).toBe(50);
       expect(progL1.progressPercentage).toBe(50);
 
-      const progL50 = getLevelProgress(40000);
-      expect(progL50.level).toBe(50);
-      expect(progL50.isMaxLevel).toBe(true);
-      expect(progL50.progressPercentage).toBe(100);
-      expect(progL50.xpNeededForNextLevel).toBe(0);
+      const progL55 = getLevelProgress(40000);
+      expect(progL55.level).toBe(55);
+      expect(progL55.title).toBe('Number Hunter');
+      expect(progL55.progressPercentage).toBeGreaterThanOrEqual(0);
+      expect(progL55.progressPercentage).toBeLessThanOrEqual(100);
     });
 
     it('3.2: Streak date calculation across DST transitions and UTC midnight offsets', () => {

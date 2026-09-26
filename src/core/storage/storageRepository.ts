@@ -19,7 +19,7 @@ export function createDefaultUserProfile(id = 'player_1'): UserProfileRecord {
     id,
     xp: 0,
     level: 1,
-    title: 'Novice',
+    title: 'Beginner',
     currentStreak: 0,
     bestStreak: 0,
     lastActiveDate: '',

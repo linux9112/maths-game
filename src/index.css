@@ -53,8 +53,8 @@ html:not(.dark) {
 
 html.light body,
 html:not(.dark) body {
-  background-color: #f1f5f9;
-  color: #0f172a;
+  background-color: #F5F7FB;
+  color: #172033;
 }
 
 /* 1. Surfaces & Card Textures in Light Mode */
@@ -346,4 +346,17 @@ html:not(.dark) ::-webkit-scrollbar-thumb {
 html.light ::-webkit-scrollbar-thumb:hover,
 html:not(.dark) ::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.45);
+}
+
+/* 9. Game Catalog Card Hover & Interactive System (Desktop) */
+.game-catalog-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .game-catalog-card:hover {
+    transform: translateY(-2.5px);
+    border-color: var(--card-hover-border) !important;
+    box-shadow: var(--card-hover-shadow) !important;
+  }
 }

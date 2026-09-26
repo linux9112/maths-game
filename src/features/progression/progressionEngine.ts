@@ -26,7 +26,18 @@ export const LEVEL_XP_THRESHOLDS: readonly number[] = Object.freeze(
  */
 export function getLevelFromXp(totalXp: number): number {
   if (totalXp <= 0 || !isFinite(totalXp)) return 1;
-  for (let lvl = 50; lvl >= 1; lvl--) {
+  const maxPrecomputed = LEVEL_XP_THRESHOLDS[49]; // Level 50 threshold: 34300
+  if (totalXp >= maxPrecomputed) {
+    let est = Math.floor(Math.pow(totalXp / 100, 2 / 3)) + 1;
+    while (Math.floor(100 * Math.pow(est, 1.5)) <= totalXp) {
+      est++;
+    }
+    while (est > 1 && Math.floor(100 * Math.pow(est - 1, 1.5)) > totalXp) {
+      est--;
+    }
+    return est;
+  }
+  for (let lvl = 49; lvl >= 1; lvl--) {
     if (totalXp >= LEVEL_XP_THRESHOLDS[lvl - 1]) {
       return lvl;
     }
@@ -35,14 +46,120 @@ export function getLevelFromXp(totalXp: number): number {
 }
 
 /**
- * Resolves rank title for a given level
+ * Exactly 100 player rank titles (Levels 1 to 100)
+ */
+export const LEVEL_TITLES_MAP: readonly string[] = Object.freeze([
+  'Beginner',               // 1
+  'Learner',                // 2
+  'Starter',                // 3
+  'Rookie',                 // 4
+  'Trainee',                // 5
+  'Apprentice',             // 6
+  'Student',                // 7
+  'Solver',                 // 8
+  'Number Solver',          // 9
+  'Math Solver',            // 10
+  'Thinker',                // 11
+  'Quick Thinker',          // 12
+  'Number Thinker',         // 13
+  'Math Thinker',           // 14
+  'Calculator',             // 15
+  'Fast Calculator',        // 16
+  'Number Calculator',      // 17
+  'Mental Calculator',      // 18
+  'Mental Math Learner',    // 19
+  'Mental Math Solver',     // 20
+  'Number Explorer',        // 21
+  'Math Explorer',          // 22
+  'Calculation Explorer',   // 23
+  'Table Explorer',         // 24
+  'Number Apprentice',      // 25
+  'Math Apprentice',        // 26
+  'Calculation Apprentice', // 27
+  'Table Apprentice',       // 28
+  'Number Warrior',         // 29
+  'Math Warrior',           // 30
+  'Calculation Warrior',    // 31
+  'Table Warrior',          // 32
+  'Number Fighter',         // 33
+  'Math Fighter',           // 34
+  'Calculation Fighter',    // 35
+  'Table Fighter',          // 36
+  'Number Challenger',      // 37
+  'Math Challenger',        // 38
+  'Calculation Challenger', // 39
+  'Table Challenger',       // 40
+  'Number Specialist',      // 41
+  'Math Specialist',        // 42
+  'Calculation Specialist', // 43
+  'Table Specialist',       // 44
+  'Mental Math Specialist', // 45
+  'Speed Specialist',       // 46
+  'Number Expert',          // 47
+  'Math Expert',            // 48
+  'Calculation Expert',     // 49
+  'Table Expert',           // 50
+  'Calculator',             // 51
+  'Quick Thinker',          // 52
+  'Number Runner',          // 53
+  'Math Runner',            // 54
+  'Number Hunter',          // 55
+  'Math Hunter',            // 56
+  'Calculation Hunter',     // 57
+  'Quick Solver',           // 58
+  'Fast Solver',            // 59
+  'Speed Solver',           // 60
+  'Calculation Master',     // 61
+  'Number Master',          // 62
+  'Math Master',            // 63
+  'Table Master',           // 64
+  'Table Expert',           // 65
+  'Math Expert',            // 66
+  'Calculation Expert',     // 67
+  'Number Expert',          // 68
+  'Mental Math Expert',     // 69
+  'Speed Expert',           // 70
+  'Calculation Specialist', // 71
+  'Number Specialist',      // 72
+  'Math Specialist',        // 73
+  'Table Specialist',       // 74
+  'Mental Math Specialist', // 75
+  'Speed Specialist',       // 76
+  'Number Champion',        // 77
+  'Math Champion',          // 78
+  'Calculation Champion',   // 79
+  'Table Champion',         // 80
+  'Mental Math Champion',   // 81
+  'Speed Champion',         // 82
+  'Number Mastermind',      // 83
+  'Math Mastermind',        // 84
+  'Calculation Mastermind', // 85
+  'Table Mastermind',       // 86
+  'Mental Math Mastermind', // 87
+  'Speed Mastermind',       // 88
+  'Number Genius',          // 89
+  'Math Genius',            // 90
+  'Calculation Genius',     // 91
+  'Table Genius',           // 92
+  'Mental Math Genius',     // 93
+  'Speed Genius',           // 94
+  'Number Legend',          // 95
+  'Math Legend',            // 96
+  'Calculation Legend',     // 97
+  'Table Legend',           // 98
+  'Mental Math Legend',     // 99
+  'Math Master',            // 100
+]);
+
+/**
+ * Resolves rank title for a given level:
+ * - Levels 1–100 mapped to specific titles
+ * - Greater than 100 returns 'Grandmaster'
  */
 export function getTitleForLevel(level: number): PlayerRankTitle {
-  if (level >= 40) return 'Grandmaster';
-  if (level >= 30) return 'Mental Math Wizard';
-  if (level >= 20) return 'Calculation Specialist';
-  if (level >= 10) return 'Math Explorer';
-  return 'Novice';
+  if (level > 100) return 'Grandmaster';
+  if (level <= 0) return 'Beginner';
+  return LEVEL_TITLES_MAP[level - 1] || 'Grandmaster';
 }
 
 /**
@@ -51,12 +168,17 @@ export function getTitleForLevel(level: number): PlayerRankTitle {
 export function getLevelProgress(totalXp: number): LevelProgress {
   const safeXp = Math.max(0, isFinite(totalXp) ? totalXp : 0);
   const level = getLevelFromXp(safeXp);
-  const currentThreshold = LEVEL_XP_THRESHOLDS[level - 1];
-  const nextThreshold = level < 50 ? LEVEL_XP_THRESHOLDS[level] : currentThreshold;
-  const xpNeeded = level < 50 ? nextThreshold - currentThreshold : 0;
-  const xpInLevel = level < 50 ? Math.max(0, safeXp - currentThreshold) : xpNeeded;
-  const progressPercent =
-    level >= 50 ? 100 : Math.min(100, Math.round((xpInLevel / Math.max(1, xpNeeded)) * 100));
+  const getThreshold = (lvl: number): number => {
+    if (lvl <= 1) return 0;
+    if (lvl <= 50) return LEVEL_XP_THRESHOLDS[lvl - 1];
+    return Math.floor(100 * Math.pow(lvl - 1, 1.5));
+  };
+
+  const currentThreshold = getThreshold(level);
+  const nextThreshold = getThreshold(level + 1);
+  const xpNeeded = Math.max(1, nextThreshold - currentThreshold);
+  const xpInLevel = Math.max(0, safeXp - currentThreshold);
+  const progressPercent = Math.min(100, Math.round((xpInLevel / xpNeeded) * 100));
 
   return {
     level,
@@ -66,7 +188,7 @@ export function getLevelProgress(totalXp: number): LevelProgress {
     xpInCurrentLevel: xpInLevel,
     xpNeededForNextLevel: xpNeeded,
     progressPercentage: progressPercent,
-    isMaxLevel: level >= 50,
+    isMaxLevel: false,
   };
 }
 

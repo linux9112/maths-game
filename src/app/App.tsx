@@ -55,7 +55,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <VisualViewportWrapper className="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-150">
+    <VisualViewportWrapper className="bg-[#F5F7FB] dark:bg-slate-900 text-[#172033] dark:text-slate-100 font-sans transition-colors duration-150">
       {/* Header with real progression state */}
       <Header
         title="MathMastery"

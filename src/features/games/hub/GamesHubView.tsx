@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
 } from 'lucide-react';
 import { GAME_CATALOG, GameCategory } from './gameCatalog';
+import { useTheme } from '../../../components/common/useTheme';
 import { RainCalculationGame } from '../speed/RainCalculationGame';
 import { SixtySecondRushGame } from '../speed/SixtySecondRushGame';
 import { RocketGame } from '../speed/RocketGame';
@@ -29,6 +30,7 @@ export interface GamesHubViewProps {
 }
 
 export const GamesHubView: React.FC<GamesHubViewProps> = ({ onBackToDashboard }) => {
+  const { isDark } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState<GameCategory>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeGameId, setActiveGameId] = useState<string | null>(null);
@@ -138,7 +140,7 @@ export const GamesHubView: React.FC<GamesHubViewProps> = ({ onBackToDashboard })
       {/* Filter Tabs & Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Category Pills */}
-        <div className="flex items-center gap-1 p-1 bg-slate-800/80 rounded-2xl border border-slate-700/60 w-full sm:w-auto overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1 p-1 bg-slate-200/80 dark:bg-slate-800/80 rounded-2xl border border-slate-300/80 dark:border-slate-700/60 w-full sm:w-auto overflow-x-auto scrollbar-none">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -147,7 +149,7 @@ export const GamesHubView: React.FC<GamesHubViewProps> = ({ onBackToDashboard })
               className={`py-1.5 px-3 sm:px-3.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 ${
                 selectedCategory === cat
                   ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               {cat}
@@ -163,49 +165,123 @@ export const GamesHubView: React.FC<GamesHubViewProps> = ({ onBackToDashboard })
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search games..."
-            className="w-full pl-9 pr-4 py-1.5 bg-slate-800/80 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full pl-9 pr-4 py-1.5 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
           />
         </div>
       </div>
 
-      {/* Games Catalog Grid */}
+      {/* Games Catalog Grid - 17 Game Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-5">
         {filteredGames.map((game) => {
           const Icon = game.icon;
+          const { accent, dayTop, dayBottom, nightTop, nightBottom } = game.themeColors;
+
+          const cardBg = isDark
+            ? `linear-gradient(to bottom, ${nightTop}, ${nightBottom})`
+            : `linear-gradient(to bottom, ${dayTop}, ${dayBottom})`;
+
+          const cardBorder = `${accent}33`; // ~20% opacity
+          const cardShadow = isDark
+            ? '0 8px 24px rgba(0, 0, 0, 0.35)'
+            : '0 8px 24px rgba(15, 23, 42, 0.08)';
+
           return (
             <div
               key={game.id}
               onClick={() => setActiveGameId(game.id)}
-              className={`p-5 rounded-3xl bg-gradient-to-b ${game.bgClass} border ${game.borderClass} shadow-xl hover:shadow-2xl transition-all cursor-pointer group flex flex-col justify-between space-y-4`}
+              className="game-catalog-card p-5 rounded-3xl border cursor-pointer group flex flex-col justify-between space-y-4"
+              style={{
+                background: cardBg,
+                borderColor: cardBorder,
+                boxShadow: cardShadow,
+                ['--card-hover-border' as string]: `${accent}66`,
+                ['--card-hover-shadow' as string]: isDark
+                  ? `0 12px 30px rgba(0, 0, 0, 0.5), 0 0 16px ${accent}25`
+                  : '0 12px 28px rgba(15, 23, 42, 0.14)',
+              }}
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className={`p-3 rounded-2xl bg-slate-800/80 border border-slate-700 shadow-md ${game.colorClass} group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-6 h-6" />
+                  {/* Icon Container */}
+                  <div
+                    className="p-3 rounded-2xl shadow-sm transition-transform group-hover:scale-105 flex items-center justify-center flex-shrink-0"
+                    style={{
+                      backgroundColor: isDark
+                        ? 'rgba(255, 255, 255, 0.08)'
+                        : 'rgba(255, 255, 255, 0.85)',
+                      borderColor: isDark ? `${accent}33` : 'rgba(15, 23, 42, 0.08)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
+                  >
+                    <Icon className="w-6 h-6" style={{ color: accent }} />
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-slate-800/90 text-slate-300 border border-slate-700">
+
+                  {/* Badges */}
+                  <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                    <span
+                      className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider border shadow-2xs"
+                      style={{
+                        backgroundColor: isDark
+                          ? 'rgba(255, 255, 255, 0.08)'
+                          : 'rgba(255, 255, 255, 0.85)',
+                        borderColor: isDark
+                          ? 'rgba(255, 255, 255, 0.15)'
+                          : 'rgba(15, 23, 42, 0.08)',
+                        color: isDark ? '#F8FAFC' : '#172033',
+                      }}
+                    >
                       {game.difficultyBadge}
                     </span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800/60">
+                    <span
+                      className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                      style={{
+                        backgroundColor: isDark ? `${accent}25` : `${accent}18`,
+                        borderColor: isDark ? `${accent}40` : `${accent}35`,
+                        color: accent,
+                      }}
+                    >
                       {game.category}
                     </span>
                   </div>
                 </div>
 
+                {/* Title & Description */}
                 <div>
-                  <h3 className="text-lg font-black text-white group-hover:text-indigo-300 transition-colors">
+                  <h3
+                    className="text-lg font-black transition-colors"
+                    style={{ color: isDark ? '#F8FAFC' : '#172033' }}
+                  >
                     {game.title}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                  <p
+                    className="text-xs mt-1 line-clamp-2 leading-relaxed"
+                    style={{ color: isDark ? '#AAB5C7' : '#526078' }}
+                  >
                     {game.description}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs font-bold text-indigo-400 group-hover:text-indigo-300">
-                <span className="text-[11px] font-mono text-slate-500 uppercase">{game.badge}</span>
-                <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              {/* Card Footer: Badge & Play Now */}
+              <div
+                className="flex items-center justify-between pt-3 text-xs font-bold transition-colors"
+                style={{
+                  borderTop: isDark
+                    ? '1px solid rgba(255, 255, 255, 0.1)'
+                    : '1px solid rgba(15, 23, 42, 0.08)',
+                }}
+              >
+                <span
+                  className="text-[11px] font-mono uppercase tracking-wide"
+                  style={{ color: isDark ? '#AAB5C7' : '#526078' }}
+                >
+                  {game.badge}
+                </span>
+                <span
+                  className="flex items-center gap-1 group-hover:translate-x-1 transition-transform"
+                  style={{ color: accent }}
+                >
                   Play Now <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>

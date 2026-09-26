@@ -1,10 +1,5 @@
 
-export type PlayerRankTitle =
-  | 'Novice'
-  | 'Math Explorer'
-  | 'Calculation Specialist'
-  | 'Mental Math Wizard'
-  | 'Grandmaster';
+export type PlayerRankTitle = string;
 
 export interface UserProfile {
   readonly id: string;

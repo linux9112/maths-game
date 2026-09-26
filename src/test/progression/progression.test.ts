@@ -88,20 +88,24 @@ describe('Progression Engine Suite', () => {
       expect(getLevelFromXp(281)).toBe(2);
       expect(getLevelFromXp(282)).toBe(3);
       expect(getLevelFromXp(34300)).toBe(50);
-      expect(getLevelFromXp(100000)).toBe(50);
+      expect(getLevelFromXp(98503)).toBe(100);
     });
 
-    it('maps all 5 rank titles to level tiers correctly', () => {
-      expect(getTitleForLevel(1)).toBe('Novice');
-      expect(getTitleForLevel(9)).toBe('Novice');
-      expect(getTitleForLevel(10)).toBe('Math Explorer');
-      expect(getTitleForLevel(19)).toBe('Math Explorer');
-      expect(getTitleForLevel(20)).toBe('Calculation Specialist');
-      expect(getTitleForLevel(29)).toBe('Calculation Specialist');
-      expect(getTitleForLevel(30)).toBe('Mental Math Wizard');
-      expect(getTitleForLevel(39)).toBe('Mental Math Wizard');
-      expect(getTitleForLevel(40)).toBe('Grandmaster');
-      expect(getTitleForLevel(50)).toBe('Grandmaster');
+    it('maps all level titles to level tiers correctly', () => {
+      expect(getTitleForLevel(1)).toBe('Beginner');
+      expect(getTitleForLevel(9)).toBe('Number Solver');
+      expect(getTitleForLevel(10)).toBe('Math Solver');
+      expect(getTitleForLevel(20)).toBe('Mental Math Solver');
+      expect(getTitleForLevel(30)).toBe('Math Warrior');
+      expect(getTitleForLevel(40)).toBe('Table Challenger');
+      expect(getTitleForLevel(50)).toBe('Table Expert');
+      expect(getTitleForLevel(60)).toBe('Speed Solver');
+      expect(getTitleForLevel(70)).toBe('Speed Expert');
+      expect(getTitleForLevel(80)).toBe('Table Champion');
+      expect(getTitleForLevel(90)).toBe('Math Genius');
+      expect(getTitleForLevel(100)).toBe('Math Master');
+      expect(getTitleForLevel(101)).toBe('Grandmaster');
+      expect(getTitleForLevel(150)).toBe('Grandmaster');
     });
 
     it('computes level progress percentage bounded within [0, 100]', () => {
@@ -110,10 +114,10 @@ describe('Progression Engine Suite', () => {
       expect(progress.progressPercentage).toBeGreaterThan(0);
       expect(progress.progressPercentage).toBeLessThan(100);
 
-      const maxProgress = getLevelProgress(50000);
-      expect(maxProgress.level).toBe(50);
-      expect(maxProgress.progressPercentage).toBe(100);
-      expect(maxProgress.isMaxLevel).toBe(true);
+      const highProgress = getLevelProgress(50000);
+      expect(highProgress.level).toBe(63);
+      expect(highProgress.progressPercentage).toBeGreaterThanOrEqual(0);
+      expect(highProgress.progressPercentage).toBeLessThanOrEqual(100);
     });
   });
 

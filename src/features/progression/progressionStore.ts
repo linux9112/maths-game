@@ -23,7 +23,7 @@ export function createInitialProfile(id = 'player_1'): UserProfile {
     id,
     xp: 0,
     level: 1,
-    levelTitle: 'Novice',
+    levelTitle: 'Beginner',
     currentStreak: 0,
     bestStreak: 0,
     lastActiveDateKey: null,
